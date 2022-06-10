@@ -15,7 +15,7 @@ public class TaskManager {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
-        idCounter = 0;
+        this.idCounter = 0;
     }
 
     public ArrayList<Task> getTasks() {
