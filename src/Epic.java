@@ -1,17 +1,14 @@
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Epic extends TaskBase {
-    private final ArrayList<Integer> subtasks;
+public class Epic extends Task {
+    private final ArrayList<Integer> subtasksId;
 
-    public Epic(String name, String description, int id) {
-        super(name, description, id, TaskStatus.NEW);
-        subtasks = new ArrayList<>();
-    }
+
 
     public Epic(String name, String description) {
-        super(name, description, null, TaskStatus.NEW);
-        subtasks = new ArrayList<>();
+        super(name, description, TaskStatus.NEW);
+        subtasksId = new ArrayList<>();
     }
 
     public void update(String name, String description) {
@@ -20,22 +17,22 @@ public class Epic extends TaskBase {
     }
 
     public void addSubtask(SubTask subtask) {
-        if (!subtasks.contains(subtask.getId())) {
-            subtasks.add(subtask.getId());
+        if (!subtasksId.contains(subtask.getId())) {
+            subtasksId.add(subtask.getId());
         }
     }
 
     public void removeSubtask(SubTask subTask) {
-        for (int i = 0; i < subtasks.size(); i++) {
-            if (Objects.equals(subtasks.get(i), subTask.id)) {
-                subtasks.remove(i);
+        for (int i = 0; i < subtasksId.size(); i++) {
+            if (Objects.equals(subtasksId.get(i), subTask.id)) {
+                subtasksId.remove(i);
                 break;
             }
         }
     }
 
     public void clearSubtasks() {
-        subtasks.clear();
+        subtasksId.clear();
         status = TaskStatus.NEW;
     }
 
@@ -46,7 +43,7 @@ public class Epic extends TaskBase {
                 ", Описание:'" + description + '\'' +
                 ", ID = " + id +
                 ", Статус = " + status +
-                ", ID Подзадач: " + subtasks.toString() +
+                ", ID Подзадач: " + subtasksId.toString() +
                 '}';
     }
 }
