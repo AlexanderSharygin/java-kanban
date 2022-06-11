@@ -3,11 +3,6 @@ public class Task {
 
     protected String name;
     protected String description;
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     protected Integer id;
     protected TaskStatus status;
 
@@ -16,12 +11,6 @@ public class Task {
         this.name = name;
         this.description = description;
         this.id = null;
-        this.status = status;
-    }
-
-    public void update(String name, String description, TaskStatus status) {
-        this.name = name;
-        this.description = description;
         this.status = status;
     }
 
@@ -34,7 +23,6 @@ public class Task {
                 ", Статус=" + status +
                 '}';
     }
-
 
     public String getName() {
         return name;
@@ -50,6 +38,22 @@ public class Task {
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 
 

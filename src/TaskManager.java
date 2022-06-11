@@ -63,29 +63,24 @@ public class TaskManager {
     }
 
     public void addTask(Task task) {
-        Task newTask = new Task(task.getName(), task.getDescription(), task.getStatus());
-        newTask.setId(idCounter);
-        tasks.put(idCounter, newTask);
+        task.setId(idCounter);
+        tasks.put(idCounter, task);
         idCounter++;
     }
 
     public void addEpic(Epic epic) {
-        Epic newEpic = new Epic(epic.getName(), epic.getDescription());
-        newEpic.setId(idCounter);
-        epics.put(idCounter, newEpic);
-        epics.forEach((key,value)->updateEpicStatus(key));
+        epic.setId(idCounter);
+        epics.put(idCounter, epic);
+        updateEpicStatus(epic.getId());
         idCounter++;
     }
 
     public void addSubTask(SubTask subtask) {
-        SubTask newSubTask = new SubTask(subtask.getName(), subtask.getDescription(),
-                subtask.getStatus(), subtask.getEpicId());
-        newSubTask.setId(idCounter);
-        subTasks.put(idCounter, newSubTask);
-
-        var subTaskEpic = epics.get(newSubTask.getEpicId());
+        subtask.setId(idCounter);
+        subTasks.put(idCounter, subtask);
+        var subTaskEpic = epics.get(subtask.getEpicId());
         if (subTaskEpic != null) {
-            subTaskEpic.addSubtask(newSubTask);
+            subTaskEpic.addSubtask(subtask);
             updateEpicStatus(subtask.getEpicId());
         }
         idCounter++;
@@ -94,22 +89,27 @@ public class TaskManager {
     public void updateTask(Task task) {
         var taskFromList = tasks.get(task.getId());
         if (taskFromList != null) {
-            taskFromList.update(task.getName(), task.getDescription(), task.getStatus());
+            taskFromList.setName(task.getName());
+            taskFromList.setDescription(task.getDescription());
+            taskFromList.setStatus(task.getStatus());
         }
     }
 
     public void updateEpic(Epic epic) {
         var epicFromList = epics.get(epic.getId());
         if (epicFromList != null) {
-            epicFromList.update(epic.getName(), epic.getDescription());
+            epicFromList.setName(epic.getName());
+            epicFromList.setDescription(epic.getDescription());
+
         }
     }
 
     public void updateSubtask(SubTask subtask) {
         var subTaskFromList = subTasks.get(subtask.getId());
         if (subTaskFromList != null) {
-            subTaskFromList.update(subtask.getName(), subtask.getDescription(),
-                    subtask.getStatus());
+            subTaskFromList.setName(subtask.getName());
+            subTaskFromList.setDescription(subtask.getDescription());
+            subTaskFromList.setStatus(subtask.getStatus());
             var epicFromList = epics.get(subtask.getEpicId());
             epicFromList.addSubtask(subtask);
             updateEpicStatus(epicFromList.getId());
