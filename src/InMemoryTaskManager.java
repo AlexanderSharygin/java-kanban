@@ -4,28 +4,31 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class TaskManager {
+public class InMemoryTaskManager implements TaskManger {
 
     private int idCounter;
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Epic> epics;
     private final HashMap<Integer, SubTask> subTasks;
 
-    public TaskManager() {
+    public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
         this.idCounter = 0;
     }
 
+    @Override
     public ArrayList<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
 
+    @Override
     public ArrayList<Epic> getEpics() {
         return new ArrayList<>(epics.values());
     }
 
+    @Override
     public ArrayList<SubTask> getSubTasks() {
         return new ArrayList<>(subTasks.values());
     }
@@ -40,8 +43,7 @@ public class TaskManager {
         epics.clear();
         subTasks.clear();
     }
-
-
+    
     public void removeAllSubTasks() {
         subTasks.clear();
         epics.forEach((key, value) -> {
@@ -50,24 +52,29 @@ public class TaskManager {
 
     }
 
+    @Override
     public Task getTaskById(int id) {
         return tasks.get(id);
     }
 
+    @Override
     public Epic getEpicById(int id) {
         return epics.get(id);
     }
 
+    @Override
     public SubTask getSubTaskById(int id) {
         return subTasks.get(id);
     }
 
+    @Override
     public void addTask(Task task) {
         task.setId(idCounter);
         tasks.put(idCounter, task);
         idCounter++;
     }
 
+    @Override
     public void addEpic(Epic epic) {
         epic.setId(idCounter);
         epics.put(idCounter, epic);
@@ -75,6 +82,7 @@ public class TaskManager {
         idCounter++;
     }
 
+    @Override
     public void addSubTask(SubTask subtask) {
         subtask.setId(idCounter);
         subTasks.put(idCounter, subtask);
@@ -86,6 +94,7 @@ public class TaskManager {
         idCounter++;
     }
 
+    @Override
     public void updateTask(Task task) {
         var taskFromList = tasks.get(task.getId());
         if (taskFromList != null) {
@@ -95,6 +104,7 @@ public class TaskManager {
         }
     }
 
+    @Override
     public void updateEpic(Epic epic) {
         var epicFromList = epics.get(epic.getId());
         if (epicFromList != null) {
@@ -104,6 +114,7 @@ public class TaskManager {
         }
     }
 
+    @Override
     public void updateSubtask(SubTask subtask) {
         var subTaskFromList = subTasks.get(subtask.getId());
         if (subTaskFromList != null) {
@@ -116,7 +127,7 @@ public class TaskManager {
         }
     }
 
-
+    @Override
     public void removeSubTaskById(int id) {
         for (var subtask : subTasks.values()) {
             if (subtask.getId() == id) {
@@ -131,11 +142,12 @@ public class TaskManager {
         }
     }
 
-
+    @Override
     public void removeTaskById(int id) {
         tasks.remove(id);
     }
 
+    @Override
     public void removeEpicById(int id) {
         epics.remove(id);
         subTasks.forEach((key, value) -> {
