@@ -18,19 +18,19 @@ public interface TaskManger {
 
     void addEpic(Epic epic);
 
-   void addSubTask(SubTask subtask);
+    void addSubTask(SubTask subtask);
 
-     void updateTask(Task task) ;
+    void updateTask(Task task);
 
     void updateEpic(Epic epic);
 
-     void updateSubtask(SubTask subtask);
+    void updateSubtask(SubTask subtask);
 
-     void removeSubTaskById(int id);
+    void removeSubTaskById(int id);
 
 
-    void removeTaskById(int id) ;
+    void removeTaskById(int id);
 
-    public void removeEpicById(int id) ;
+    void removeEpicById(int id);
 
 }
