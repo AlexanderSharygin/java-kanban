@@ -4,7 +4,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        TaskManger inMemoryTaskManager = Managers.getDefault();
+        HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
+        inMemoryTaskManager.setHistoryManager(inMemoryHistoryManager);
         Epic epic = new Epic("First", "one");
         inMemoryTaskManager.addEpic(epic);
         SubTask st1 = new SubTask("St1", "St1One", TaskStatus.IN_PROGRESS, 0);
@@ -42,7 +44,13 @@ public class Main {
         inMemoryTaskManager.getTaskById(5);
         inMemoryTaskManager.getSubTaskById(3);
         inMemoryTaskManager.getSubTaskById(4);
-        List<HistoryEntry> historyEntryList = inMemoryTaskManager.getHistory();
+        inMemoryTaskManager.getTaskById(5);
+        inMemoryTaskManager.getTaskById(6);
+        inMemoryTaskManager.getEpicById(0);
+        inMemoryTaskManager.getTaskById(5);
+        inMemoryTaskManager.getEpicById(0);
+
+        List<HistoryEntry> historyEntryList = inMemoryHistoryManager.getHistory();
         System.out.println(historyEntryList);
     }
 }

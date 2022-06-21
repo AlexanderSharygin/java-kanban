@@ -1,4 +1,3 @@
-
 public class Task {
 
     protected String name;
@@ -28,12 +27,24 @@ public class Task {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public TaskStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 
     public Integer getId() {
@@ -43,19 +54,6 @@ public class Task {
     public void setId(Integer id) {
         this.id = id;
     }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setStatus(TaskStatus status) {
-        this.status = status;
-    }
-
 
     @Override
     public boolean equals(Object o) {

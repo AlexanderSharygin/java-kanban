@@ -6,20 +6,25 @@ import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManger {
 
-    private int idCounter;
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Epic> epics;
     private final HashMap<Integer, SubTask> subTasks;
-
-    private final List<HistoryEntry> history;
+    HistoryManager historyManager;
+    private int idCounter;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
         this.idCounter = 0;
-        this.history = new ArrayList<>();
     }
+
+
+    @Override
+    public void setHistoryManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
+
 
     @Override
     public ArrayList<Task> getTasks() {
@@ -36,17 +41,18 @@ public class InMemoryTaskManager implements TaskManger {
         return new ArrayList<>(subTasks.values());
     }
 
-
+    @Override
     public void removeAllTasks() {
         tasks.clear();
     }
 
-
+    @Override
     public void removeAllEpics() {
         epics.clear();
         subTasks.clear();
     }
-    
+
+    @Override
     public void removeAllSubTasks() {
         subTasks.clear();
         epics.forEach((key, value) -> {
@@ -55,15 +61,12 @@ public class InMemoryTaskManager implements TaskManger {
 
     }
 
-    public List<HistoryEntry> getHistory() {
-        return history;
-    }
 
     @Override
     public Task getTaskById(int id) {
         Task task = tasks.get(id);
-        if (task!=null) {
-            addToHistory(task);
+        if (task != null) {
+            historyManager.add(task);
         }
         return task;
 
@@ -72,8 +75,8 @@ public class InMemoryTaskManager implements TaskManger {
     @Override
     public Epic getEpicById(int id) {
         Epic epic = epics.get(id);
-        if(epic!=null) {
-            addToHistory(epic);
+        if (epic != null) {
+            historyManager.add(epic);
         }
         return epic;
     }
@@ -81,8 +84,8 @@ public class InMemoryTaskManager implements TaskManger {
     @Override
     public SubTask getSubTaskById(int id) {
         SubTask subTask = subTasks.get(id);
-        if (subTask!=null) {
-            addToHistory(subTask);
+        if (subTask != null) {
+            historyManager.add(subTask);
         }
         return subTask;
     }
@@ -179,6 +182,7 @@ public class InMemoryTaskManager implements TaskManger {
 
     }
 
+    @Override
     public List<SubTask> getEpicSubtasks(int epicId) {
         List<SubTask> result = new ArrayList<>();
         subTasks.forEach((key, value) -> {
@@ -188,6 +192,7 @@ public class InMemoryTaskManager implements TaskManger {
         });
         return result;
     }
+
 
     private void updateEpicStatus(int epicId) {
         for (var id : epics.keySet()) {
@@ -205,15 +210,5 @@ public class InMemoryTaskManager implements TaskManger {
                 }
             }
         }
-    }
-
-    private void addToHistory(Task task)
-    {
-        HistoryEntry historyEntry = new HistoryEntry(task);
-        if (history.size()==10) {
-            history.remove(0);
-        }
-        history.add(historyEntry);
-
     }
 }

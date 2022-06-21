@@ -8,8 +8,7 @@ public class HistoryEntry {
     private final ItemType itemType;
     private final Date dateTime;
 
-    public HistoryEntry(Task item)
-    {
+    public HistoryEntry(Task item) {
         id = item.getId();
         String className = item.getClass().getName();
         switch (className) {
@@ -31,7 +30,7 @@ public class HistoryEntry {
 
     @Override
     public String toString() {
-        return  "id=" + id +
+        return "id=" + id +
                 ", type=" + itemType +
                 ", DateTime=" + DATA_TIME_FORMATTER.format(dateTime);
     }
