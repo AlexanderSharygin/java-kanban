@@ -15,7 +15,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (history.size() == 10) {
             history.remove(0);
         }
-        history.add(historyEntry);
+        history.add(0,historyEntry);
     }
 
     @Override
