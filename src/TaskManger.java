@@ -29,7 +29,6 @@ public interface TaskManger {
 
     void removeSubTaskById(int id);
 
-
     void removeTaskById(int id);
 
     void removeEpicById(int id);
@@ -41,6 +40,8 @@ public interface TaskManger {
     void removeAllEpics();
 
     void removeAllSubTasks();
+
+    HistoryManager getHistoryManager();
 
     void setHistoryManager(HistoryManager historyManager);
 }

@@ -3,5 +3,5 @@ import java.util.List;
 public interface HistoryManager {
     void add(Task task);
 
-    List<HistoryEntry> getHistory();
+    List<Task> getHistory();
 }

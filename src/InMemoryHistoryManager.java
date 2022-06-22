@@ -1,25 +1,26 @@
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private final List<HistoryEntry> history;
+    private static final int HISTORY_LENGTH = 10;
+
+    private final List<Task> history;
 
     public InMemoryHistoryManager() {
-        this.history = new ArrayList<>();
+        this.history = new LinkedList<>();
     }
 
     @Override
     public void add(Task task) {
-        HistoryEntry historyEntry = new HistoryEntry(task);
-        if (history.size() == 10) {
+        if (history.size() == HISTORY_LENGTH) {
             history.remove(0);
         }
-        history.add(historyEntry);
+        history.add(task);
     }
 
     @Override
-    public List<HistoryEntry> getHistory() {
+    public List<Task> getHistory() {
         return history;
     }
 }

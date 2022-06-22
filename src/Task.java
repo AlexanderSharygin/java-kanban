@@ -5,7 +5,6 @@ public class Task {
     protected Integer id;
     protected TaskStatus status;
 
-
     public Task(String name, String description, TaskStatus status) {
         this.name = name;
         this.description = description;

@@ -9,7 +9,7 @@ public class InMemoryTaskManager implements TaskManger {
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Epic> epics;
     private final HashMap<Integer, SubTask> subTasks;
-    HistoryManager historyManager;
+    private HistoryManager historyManager;
     private int idCounter;
 
     public InMemoryTaskManager() {
@@ -19,12 +19,15 @@ public class InMemoryTaskManager implements TaskManger {
         this.idCounter = 0;
     }
 
+    @Override
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
 
     @Override
     public void setHistoryManager(HistoryManager historyManager) {
         this.historyManager = historyManager;
     }
-
 
     @Override
     public ArrayList<Task> getTasks() {
@@ -61,7 +64,6 @@ public class InMemoryTaskManager implements TaskManger {
 
     }
 
-
     @Override
     public Task getTaskById(int id) {
         Task task = tasks.get(id);
@@ -69,7 +71,6 @@ public class InMemoryTaskManager implements TaskManger {
             historyManager.add(task);
         }
         return task;
-
     }
 
     @Override
@@ -133,7 +134,6 @@ public class InMemoryTaskManager implements TaskManger {
         if (epicFromList != null) {
             epicFromList.setName(epic.getName());
             epicFromList.setDescription(epic.getDescription());
-
         }
     }
 
@@ -177,9 +177,7 @@ public class InMemoryTaskManager implements TaskManger {
             if (value.getEpicId() == id) {
                 subTasks.remove(key);
             }
-
         });
-
     }
 
     @Override
@@ -192,7 +190,6 @@ public class InMemoryTaskManager implements TaskManger {
         });
         return result;
     }
-
 
     private void updateEpicStatus(int epicId) {
         for (var id : epics.keySet()) {
