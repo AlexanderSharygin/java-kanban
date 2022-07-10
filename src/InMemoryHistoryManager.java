@@ -1,5 +1,7 @@
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -17,6 +19,12 @@ public class InMemoryHistoryManager implements HistoryManager {
             history.remove(0);
         }
         history.add(task);
+    }
+
+    @Override
+    public void remove(int id) {
+        List<Task> tasks = history.stream().filter(k->k.id==id).collect(Collectors.toList());
+        tasks.forEach(history::remove);
     }
 
     @Override
