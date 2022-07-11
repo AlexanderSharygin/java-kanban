@@ -49,8 +49,10 @@ public class Main {
         taskManger.getEpicById(0);
         taskManger.getTaskById(5);
         taskManger.getEpicById(0);
+        taskManger.getEpicById(2);
+        taskManger.removeAllSubTasks();
 
-
+        System.out.println("-------------------------------");
         List<Task> history = inMemoryHistoryManager.getHistory();
         System.out.println(history);
     }

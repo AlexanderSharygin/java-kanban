@@ -192,7 +192,7 @@ public class InMemoryTaskManager implements TaskManger {
         for (var subtask:items) {
             if (subtask.getEpicId() == id) {
                 subTasks.remove(subtask.id);
-                historyManager.remove(id);
+                historyManager.remove(subtask.id);
             }
         }
     }
