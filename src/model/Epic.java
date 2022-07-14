@@ -1,3 +1,7 @@
+package model;
+
+import utils.TaskStatus;
+
 import java.util.ArrayList;
 import java.util.Objects;
 

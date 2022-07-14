@@ -1,3 +1,7 @@
+package model;
+
+import utils.TaskStatus;
+
 public class Task {
 
     protected String name;

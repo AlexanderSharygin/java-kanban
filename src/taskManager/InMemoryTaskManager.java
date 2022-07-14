@@ -1,3 +1,11 @@
+package taskManager;
+
+import historyManager.HistoryManager;
+import model.Epic;
+import model.SubTask;
+import model.Task;
+import utils.TaskStatus;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -191,8 +199,8 @@ public class InMemoryTaskManager implements TaskManger {
         List<SubTask> items = new ArrayList<>(subTasks.values());
         for (var subtask : items) {
             if (subtask.getEpicId() == id) {
-                subTasks.remove(subtask.id);
-                historyManager.remove(subtask.id);
+                subTasks.remove(subtask.getId());
+                historyManager.remove(subtask.getId());
             }
         }
     }
@@ -208,6 +216,11 @@ public class InMemoryTaskManager implements TaskManger {
         return result;
     }
 
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getTasks();
+    }
+
     private void updateEpicStatus(int epicId) {
         for (var id : epics.keySet()) {
             if (id == epicId) {
@@ -216,11 +229,11 @@ public class InMemoryTaskManager implements TaskManger {
                 List<SubTask> newSubTasks = epicsSubtasks.stream().filter(k -> k.getStatus() == TaskStatus.NEW).collect(Collectors.toList());
                 List<SubTask> doneSubtasks = epicsSubtasks.stream().filter(k -> k.getStatus() == TaskStatus.DONE).collect(Collectors.toList());
                 if (epicsSubtasks.isEmpty() || newSubTasks.size() == epicsSubtasks.size()) {
-                    epics.get(id).status = TaskStatus.NEW;
+                    epics.get(id).setStatus(TaskStatus.NEW);
                 } else if (doneSubtasks.size() == epicsSubtasks.size()) {
-                    epics.get(id).status = TaskStatus.DONE;
+                    epics.get(id).setStatus(TaskStatus.DONE);
                 } else {
-                    epics.get(id).status = TaskStatus.IN_PROGRESS;
+                    epics.get(id).setStatus(TaskStatus.IN_PROGRESS);
                 }
             }
         }

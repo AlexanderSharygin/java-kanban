@@ -1,3 +1,8 @@
+package taskManager;
+
+import historyManager.HistoryManager;
+import historyManager.InMemoryHistoryManager;
+
 public class Managers {
 
     public static TaskManger getDefault() {
@@ -8,5 +13,3 @@ public class Managers {
         return new InMemoryHistoryManager();
     }
 }
-
-

@@ -1,13 +1,19 @@
-import java.util.ArrayList;
+package taskManager;
+
+import historyManager.HistoryManager;
+import model.Epic;
+import model.SubTask;
+import model.Task;
+
 import java.util.List;
 
 public interface TaskManger {
 
-    ArrayList<Task> getTasks();
+    List<Task> getTasks();
 
-    ArrayList<Epic> getEpics();
+    List<Epic> getEpics();
 
-    ArrayList<SubTask> getSubTasks();
+    List<SubTask> getSubTasks();
 
     Task getTaskById(int id);
 
@@ -44,4 +50,6 @@ public interface TaskManger {
     HistoryManager getHistoryManager();
 
     void setHistoryManager(HistoryManager historyManager);
+
+    List<Task> getHistory();
 }

@@ -1,6 +1,9 @@
+package historyManager;
+
+import model.Task;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -18,9 +21,9 @@ public class InMemoryHistoryManager implements HistoryManager {
         newLastNode.next = null;
         newLastNode.prev = oldLastNode;
         last = newLastNode;
-        if (oldLastNode == null)
+        if (oldLastNode == null) {
             first = newLastNode;
-        else
+        } else
             oldLastNode.next = newLastNode;
     }
 
@@ -42,27 +45,28 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
+    @Override
     public ArrayList<Task> getTasks() {
-        ArrayList<Task> tasksList = new ArrayList<>();
+        ArrayList<Task> tasks = new ArrayList<>();
         Node node = first;
         while (node != null) {
-            tasksList.add(node.data);
+            tasks.add(node.data);
             node = node.next;
         }
-        return tasksList;
+        return tasks;
     }
 
     @Override
     public void add(Task task) {
-        if (!tasksSet.containsKey(task.id)) {
+        if (!tasksSet.containsKey(task.getId())) {
             Node node = new Node(task);
-            tasksSet.put(task.id, node);
+            tasksSet.put(task.getId(), node);
             linkLast(node);
         } else {
-            Node oldNode = tasksSet.get(task.id);
+            Node oldNode = tasksSet.get(task.getId());
             removeNode(oldNode);
             Node node = new Node(task);
-            tasksSet.put(task.id, node);
+            tasksSet.put(task.getId(), node);
             linkLast(node);
         }
     }
@@ -74,11 +78,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(oldNode);
             tasksSet.remove(id);
         }
-    }
-
-    @Override
-    public List<Task> getTasksSet() {
-        return getTasks();
     }
 
     static class Node {

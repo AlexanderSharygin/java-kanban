@@ -1,3 +1,11 @@
+import historyManager.HistoryManager;
+import model.Epic;
+import model.SubTask;
+import model.Task;
+import taskManager.Managers;
+import taskManager.TaskManger;
+import utils.TaskStatus;
+
 import java.util.List;
 
 public class Main {
@@ -17,22 +25,22 @@ public class Main {
         taskManger.addSubTask(st3);
         SubTask st4 = new SubTask("St4", "St1One", TaskStatus.NEW, 2);
         taskManger.addSubTask(st4);
-        st4.id = 4;
-        st4.status = TaskStatus.IN_PROGRESS;
+        st4.setId(4);
+        st4.setStatus(TaskStatus.IN_PROGRESS);
         taskManger.updateSubtask(st4);
-        st4.status = TaskStatus.DONE;
+        st4.setStatus(TaskStatus.DONE);
         taskManger.updateSubtask(st4);
-        st3.id = 3;
-        st3.status = TaskStatus.DONE;
+        st3.setId(3);
+        st3.setStatus(TaskStatus.DONE);
         taskManger.updateSubtask(st3);
-        st4.status = TaskStatus.DONE;
+        st4.setStatus(TaskStatus.DONE);
         taskManger.updateSubtask(st4);
 
         Task task1 = new Task("jjj", "one", TaskStatus.NEW);
         taskManger.addTask(task1);
         Task task2 = new Task("jttjj", "otttne", TaskStatus.DONE);
         taskManger.addTask(task2);
-        task1.status = TaskStatus.IN_PROGRESS;
+        task1.setStatus(TaskStatus.IN_PROGRESS);
         taskManger.updateTask(task1);
         System.out.println(taskManger.getTasks());
         System.out.println(taskManger.getEpics());
@@ -52,7 +60,7 @@ public class Main {
         taskManger.getEpicById(2);
         taskManger.removeEpicById(2);
 
-        List<Task> history = inMemoryHistoryManager.getTasksSet();
+        List<Task> history = taskManger.getHistory();
         System.out.println(history);
     }
 }

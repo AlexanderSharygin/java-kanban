@@ -1,3 +1,7 @@
+package historyManager;
+
+import model.Task;
+
 import java.util.List;
 
 public interface HistoryManager {
@@ -5,6 +9,5 @@ public interface HistoryManager {
 
     void remove(int id);
 
-    List<Task> getTasksSet();
+    List<Task> getTasks();
 }
-

@@ -1,3 +1,7 @@
+package model;
+
+import utils.TaskStatus;
+
 public class SubTask extends Task {
 
     private final int epicId;
