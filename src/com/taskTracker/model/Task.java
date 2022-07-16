@@ -1,6 +1,6 @@
-package model;
+package com.taskTracker.model;
 
-import utils.TaskStatus;
+import com.taskTracker.utils.TaskStatus;
 
 public class Task {
 

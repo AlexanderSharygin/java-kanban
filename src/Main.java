@@ -1,12 +1,13 @@
-import historyManager.HistoryManager;
-import model.Epic;
-import model.SubTask;
-import model.Task;
-import taskManager.Managers;
-import taskManager.TaskManger;
-import utils.TaskStatus;
+import com.taskTracker.historyManager.HistoryManager;
+import com.taskTracker.model.Epic;
+import com.taskTracker.model.SubTask;
+import com.taskTracker.model.Task;
+import com.taskTracker.taskMmanager.Managers;
+import com.taskTracker.taskMmanager.TaskManger;
 
 import java.util.List;
+
+import static com.taskTracker.utils.TaskStatus.*;
 
 public class Main {
 
@@ -17,30 +18,30 @@ public class Main {
         taskManger.setHistoryManager(inMemoryHistoryManager);
         Epic epic = new Epic("First", "one");
         taskManger.addEpic(epic);
-        SubTask st1 = new SubTask("St1", "St1One", TaskStatus.IN_PROGRESS, 0);
+        SubTask st1 = new SubTask("St1", "St1One", IN_PROGRESS, 0);
         taskManger.addSubTask(st1);
         Epic epic2 = new Epic("Second", "EpicTwo");
         taskManger.addEpic(epic2);
-        SubTask st3 = new SubTask("St3", "St1One", TaskStatus.NEW, 2);
+        SubTask st3 = new SubTask("St3", "St1One", NEW, 2);
         taskManger.addSubTask(st3);
-        SubTask st4 = new SubTask("St4", "St1One", TaskStatus.NEW, 2);
+        SubTask st4 = new SubTask("St4", "St1One", NEW, 2);
         taskManger.addSubTask(st4);
         st4.setId(4);
-        st4.setStatus(TaskStatus.IN_PROGRESS);
+        st4.setStatus(IN_PROGRESS);
         taskManger.updateSubtask(st4);
-        st4.setStatus(TaskStatus.DONE);
+        st4.setStatus(DONE);
         taskManger.updateSubtask(st4);
         st3.setId(3);
-        st3.setStatus(TaskStatus.DONE);
+        st3.setStatus(DONE);
         taskManger.updateSubtask(st3);
-        st4.setStatus(TaskStatus.DONE);
+        st4.setStatus(DONE);
         taskManger.updateSubtask(st4);
 
-        Task task1 = new Task("jjj", "one", TaskStatus.NEW);
+        Task task1 = new Task("jjj", "one", NEW);
         taskManger.addTask(task1);
-        Task task2 = new Task("jttjj", "otttne", TaskStatus.DONE);
+        Task task2 = new Task("jttjj", "otttne",DONE);
         taskManger.addTask(task2);
-        task1.setStatus(TaskStatus.IN_PROGRESS);
+        task1.setStatus(IN_PROGRESS);
         taskManger.updateTask(task1);
         System.out.println(taskManger.getTasks());
         System.out.println(taskManger.getEpics());

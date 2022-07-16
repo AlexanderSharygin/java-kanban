@@ -1,6 +1,6 @@
-package historyManager;
+package com.taskTracker.historyManager;
 
-import model.Task;
+import com.taskTracker.model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,8 +23,9 @@ public class InMemoryHistoryManager implements HistoryManager {
         last = newLastNode;
         if (oldLastNode == null) {
             first = newLastNode;
-        } else
+        } else {
             oldLastNode.next = newLastNode;
+        }
     }
 
     void removeNode(Node node) {

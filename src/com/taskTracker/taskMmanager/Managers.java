@@ -1,7 +1,7 @@
-package taskManager;
+package com.taskTracker.taskMmanager;
 
-import historyManager.HistoryManager;
-import historyManager.InMemoryHistoryManager;
+import com.taskTracker.historyManager.HistoryManager;
+import com.taskTracker.historyManager.InMemoryHistoryManager;
 
 public class Managers {
 

@@ -1,10 +1,10 @@
-package taskManager;
+package com.taskTracker.taskMmanager;
 
-import historyManager.HistoryManager;
-import model.Epic;
-import model.SubTask;
-import model.Task;
-import utils.TaskStatus;
+import com.taskTracker.historyManager.HistoryManager;
+import com.taskTracker.model.Epic;
+import com.taskTracker.model.SubTask;
+import com.taskTracker.model.Task;
+import com.taskTracker.utils.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
