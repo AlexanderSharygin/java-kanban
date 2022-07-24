@@ -5,11 +5,13 @@ import com.taskTracker.utils.TaskStatus;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.taskTracker.model.TaskType.*;
+
 public class Epic extends Task {
     private final ArrayList<Integer> subtasksId;
 
     public Epic(String name, String description) {
-        super(name, description, TaskStatus.NEW);
+        super(name, description, TaskStatus.NEW, EPIC);
         subtasksId = new ArrayList<>();
     }
 
@@ -35,12 +37,6 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Эпик{" +
-                "Имя='" + name + '\'' +
-                ", Описание:'" + description + '\'' +
-                ", ID = " + id +
-                ", Статус = " + status +
-                ", ID Подзадач: " + subtasksId.toString() +
-                '}';
+            return String.join(",", id.toString(), type.toString(), name, status.toString(),description);
     }
 }

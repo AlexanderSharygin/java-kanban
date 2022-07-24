@@ -2,28 +2,35 @@ package com.taskTracker.model;
 
 import com.taskTracker.utils.TaskStatus;
 
+import static com.taskTracker.model.TaskType.*;
+
 public class Task {
 
     protected String name;
     protected String description;
     protected Integer id;
     protected TaskStatus status;
+    protected TaskType type;
+
+    public Task(String name, String description, TaskStatus status, TaskType type) {
+        this.name = name;
+        this.description = description;
+        this.id = null;
+        this.status = status;
+        this.type =type;
+    }
 
     public Task(String name, String description, TaskStatus status) {
         this.name = name;
         this.description = description;
         this.id = null;
         this.status = status;
+        this.type = TASK;
     }
 
     @Override
     public String toString() {
-        return "Задача{" +
-                "Имя='" + name + '\'' +
-                ", Описание='" + description + '\'' +
-                ", id=" + id +
-                ", Статус=" + status +
-                '}';
+        return String.join(",", id.toString(), type.toString(), name, status.toString(),description) ;
     }
 
     public String getName() {

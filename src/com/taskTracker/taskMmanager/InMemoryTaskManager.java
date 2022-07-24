@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManger {
 
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epics;
-    private final HashMap<Integer, SubTask> subTasks;
-    private HistoryManager historyManager;
-    private int idCounter;
+    protected final HashMap<Integer, Task> tasks;
+    protected final HashMap<Integer, Epic> epics;
+    protected final HashMap<Integer, SubTask> subTasks;
+    protected HistoryManager historyManager;
+    protected int idCounter;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();

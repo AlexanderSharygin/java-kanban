@@ -2,9 +2,11 @@ import com.taskTracker.historyManager.HistoryManager;
 import com.taskTracker.model.Epic;
 import com.taskTracker.model.SubTask;
 import com.taskTracker.model.Task;
+import com.taskTracker.taskMmanager.FileBackedTasksManager;
 import com.taskTracker.taskMmanager.Managers;
 import com.taskTracker.taskMmanager.TaskManger;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.taskTracker.utils.TaskStatus.*;
@@ -63,5 +65,33 @@ public class Main {
 
         List<Task> history = taskManger.getHistory();
         System.out.println(history);
+
+
+       try {
+           TaskManger  newTaskManager = new FileBackedTasksManager("tasks.csv");
+           HistoryManager FileBackedHistoryManager = Managers.getFileBackedHistoryManager();
+           newTaskManager.setHistoryManager(FileBackedHistoryManager);
+           newTaskManager.addEpic(epic);
+           SubTask st11 = new SubTask("St1", "St1One", IN_PROGRESS, 0);
+           newTaskManager.addSubTask(st1);
+           Epic epic12 = new Epic("Second", "EpicTwo");
+           newTaskManager.addEpic(epic2);
+           SubTask st13 = new SubTask("St3", "St1One", NEW, 2);
+           newTaskManager.addSubTask(st3);
+           SubTask st14 = new SubTask("St4", "St1One", NEW, 2);
+           newTaskManager.addSubTask(st4);
+           Task task12 = new Task("jjj", "one", NEW);
+           newTaskManager.addTask(task1);
+           newTaskManager.getTaskById(5);
+           newTaskManager.getEpicById(0);
+           newTaskManager.getSubTaskById(4);
+
+
+       }
+       catch (IOException exception)
+       {
+           System.out.println("Ошибка при создании файла");
+       }
+
     }
 }
