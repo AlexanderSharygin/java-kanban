@@ -6,6 +6,7 @@ import com.taskTracker.taskMmanager.FileBackedTasksManager;
 import com.taskTracker.taskMmanager.Managers;
 import com.taskTracker.taskMmanager.TaskManger;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -15,14 +16,14 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TaskManger taskManger = Managers.getDefault();
+   /*     TaskManger taskManger = Managers.getDefault();
         HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
         taskManger.setHistoryManager(inMemoryHistoryManager);
-        Epic epic = new Epic("First", "one");
+        Epic epic = new Epic("First", "one", NEW);
         taskManger.addEpic(epic);
         SubTask st1 = new SubTask("St1", "St1One", IN_PROGRESS, 0);
         taskManger.addSubTask(st1);
-        Epic epic2 = new Epic("Second", "EpicTwo");
+        Epic epic2 = new Epic("Second", "EpicTwo", NEW);
         taskManger.addEpic(epic2);
         SubTask st3 = new SubTask("St3", "St1One", NEW, 2);
         taskManger.addSubTask(st3);
@@ -64,27 +65,32 @@ public class Main {
         taskManger.removeEpicById(2);
 
         List<Task> history = taskManger.getHistory();
-        System.out.println(history);
+        System.out.println(history);*/
 
 
        try {
-           TaskManger  newTaskManager = new FileBackedTasksManager("tasks.csv");
-           HistoryManager FileBackedHistoryManager = Managers.getFileBackedHistoryManager();
-           newTaskManager.setHistoryManager(FileBackedHistoryManager);
-           newTaskManager.addEpic(epic);
+
+
+           FileBackedTasksManager  newTaskManager = Managers.loadFromFile(new File ("resources/tasks.csv"));
+
+           HistoryManager fileBackedHistoryManager = Managers.getFileBackedHistoryManager();
+
+
+       newTaskManager.setHistoryManager(fileBackedHistoryManager);
+          /* newTaskManager.addEpic(epic);
            SubTask st11 = new SubTask("St1", "St1One", IN_PROGRESS, 0);
            newTaskManager.addSubTask(st1);
-           Epic epic12 = new Epic("Second", "EpicTwo");
+           Epic epic12 = new Epic("Second", "EpicTwo", NEW);
            newTaskManager.addEpic(epic2);
            SubTask st13 = new SubTask("St3", "St1One", NEW, 2);
            newTaskManager.addSubTask(st3);
            SubTask st14 = new SubTask("St4", "St1One", NEW, 2);
            newTaskManager.addSubTask(st4);
            Task task12 = new Task("jjj", "one", NEW);
-           newTaskManager.addTask(task1);
-           newTaskManager.getTaskById(5);
-           newTaskManager.getEpicById(0);
-           newTaskManager.getSubTaskById(4);
+           newTaskManager.addTask(task1);*/
+           newTaskManager.getTaskById(0);
+           newTaskManager.getEpicById(1);
+           newTaskManager.getSubTaskById(5);
 
 
        }

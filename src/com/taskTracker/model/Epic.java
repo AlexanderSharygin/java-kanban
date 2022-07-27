@@ -10,8 +10,8 @@ import static com.taskTracker.model.TaskType.*;
 public class Epic extends Task {
     private final ArrayList<Integer> subtasksId;
 
-    public Epic(String name, String description) {
-        super(name, description, TaskStatus.NEW, EPIC);
+    public Epic(String name, String description, TaskStatus status) {
+        super(name, description, status, EPIC);
         subtasksId = new ArrayList<>();
     }
 

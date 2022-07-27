@@ -2,7 +2,7 @@ package com.taskTracker.model;
 
 import com.taskTracker.utils.TaskStatus;
 
-import static com.taskTracker.model.TaskType.*;
+import static com.taskTracker.model.TaskType.TASK;
 
 public class Task {
 
@@ -10,6 +10,11 @@ public class Task {
     protected String description;
     protected Integer id;
     protected TaskStatus status;
+
+    public TaskType getType() {
+        return type;
+    }
+
     protected TaskType type;
 
     public Task(String name, String description, TaskStatus status, TaskType type) {
@@ -17,7 +22,7 @@ public class Task {
         this.description = description;
         this.id = null;
         this.status = status;
-        this.type =type;
+        this.type = type;
     }
 
     public Task(String name, String description, TaskStatus status) {
@@ -30,7 +35,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.join(",", id.toString(), type.toString(), name, status.toString(),description) ;
+        return String.join(",", id.toString(), type.toString(), name, status.toString(), description);
     }
 
     public String getName() {

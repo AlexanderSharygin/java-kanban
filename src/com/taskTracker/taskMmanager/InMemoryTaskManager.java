@@ -221,7 +221,7 @@ public class InMemoryTaskManager implements TaskManger {
         return historyManager.getTasks();
     }
 
-    private void updateEpicStatus(int epicId) {
+    protected void updateEpicStatus(int epicId) {
         for (var id : epics.keySet()) {
             if (id == epicId) {
                 List<SubTask> epicsSubtasks = subTasks.values().stream().filter(
