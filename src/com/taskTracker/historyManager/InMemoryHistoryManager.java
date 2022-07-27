@@ -12,7 +12,6 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node last;
 
     public InMemoryHistoryManager() {
-
         this.tasksSet = new HashMap<>();
     }
 
@@ -80,6 +79,4 @@ public class InMemoryHistoryManager implements HistoryManager {
             tasksSet.remove(id);
         }
     }
-
-
 }

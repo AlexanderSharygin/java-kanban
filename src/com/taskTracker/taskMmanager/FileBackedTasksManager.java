@@ -4,7 +4,7 @@ import com.taskTracker.historyManager.HistoryManager;
 import com.taskTracker.model.Epic;
 import com.taskTracker.model.SubTask;
 import com.taskTracker.model.Task;
-import com.taskTracker.utils.TaskStatus;
+import com.taskTracker.utils.ManagerSaveException;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -14,21 +14,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.InputMismatchException;
+import java.util.Collections;
 import java.util.List;
 
-import static com.taskTracker.model.TaskType.*;
-
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private final String fileName;
-
-    public void setSourceFileLocked(boolean sourceFileLocked) {
-        isSourceFileLocked = sourceFileLocked;
-    }
-
-    private boolean isSourceFileLocked;
     public static List<String> HEADER_COLUMNS = List.of("id", "type", "name", "status", "description", "epic");
-
+    private final String fileName;
+    private boolean isSourceFileLocked;
 
     public FileBackedTasksManager(String filePath) throws IOException {
         super();
@@ -40,6 +32,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
+    public void setIsSourceFileLocked(boolean sourceFileLocked) {
+        isSourceFileLocked = sourceFileLocked;
+    }
 
     @Override
     public HistoryManager getHistoryManager() {
@@ -55,21 +50,18 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     @Override
     public void removeAllTasks() {
         super.removeAllTasks();
-
         save();
     }
 
     @Override
     public void removeAllEpics() {
         super.removeAllEpics();
-
         save();
     }
 
     @Override
     public void removeAllSubTasks() {
         super.removeAllSubTasks();
-
         save();
     }
 
@@ -77,6 +69,40 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void addTask(Task task) {
         super.addTask(task);
         save();
+    }
+
+    public void addTask(Task task, int id) {
+        tasks.put(id, task);
+        updateIdCounter();
+        save();
+    }
+
+    public void addEpic(Epic epic, int id) {
+        epics.put(id, epic);
+        updateIdCounter();
+        save();
+    }
+
+    public void addSubTask(SubTask subTask, int id) {
+        subTasks.put(id, subTask);
+        updateIdCounter();
+        save();
+    }
+
+    private void updateIdCounter() {
+        int maxTasksId = 0;
+        if (!tasks.keySet().isEmpty()) {
+            maxTasksId = Collections.max(tasks.keySet());
+        }
+        int maxEpicId = 0;
+        if (!epics.keySet().isEmpty()) {
+            maxEpicId = Collections.max(epics.keySet());
+        }
+        int maxSubtaskId = 0;
+        if (!subTasks.keySet().isEmpty()) {
+            maxSubtaskId = Collections.max(subTasks.keySet());
+        }
+        idCounter = Collections.max(List.of(maxTasksId, maxEpicId, maxSubtaskId)) + 1;
     }
 
     @Override
@@ -88,28 +114,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     @Override
     public void addSubTask(SubTask subtask) {
         super.addSubTask(subtask);
-
         save();
     }
 
     @Override
     public void updateTask(Task task) {
         super.updateTask(task);
-
         save();
     }
 
     @Override
     public void updateEpic(Epic epic) {
         super.updateEpic(epic);
-
         save();
     }
 
     @Override
     public void updateSubtask(SubTask subtask) {
         super.updateSubtask(subtask);
-
         save();
     }
 
@@ -155,60 +177,27 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void save() {
         if (!isSourceFileLocked) {
             try (Writer fileWriter = new FileWriter(fileName, StandardCharsets.UTF_8);
-                 BufferedWriter bw = new BufferedWriter(fileWriter)) {
+                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
                 String header = String.join(",", HEADER_COLUMNS);
-                bw.write(header);
-                bw.newLine();
+                bufferedWriter.write(header);
+                bufferedWriter.newLine();
                 for (var task : tasks.values()) {
-                    bw.write(task.toString());
-                    bw.newLine();
+                    bufferedWriter.write(task.toString());
+                    bufferedWriter.newLine();
                 }
                 for (var epic : epics.values()) {
-                    bw.write(epic.toString());
-                    bw.newLine();
+                    bufferedWriter.write(epic.toString());
+                    bufferedWriter.newLine();
                 }
                 for (var subtask : subTasks.values()) {
-                    bw.write(subtask.toString());
-                    bw.newLine();
+                    bufferedWriter.write(subtask.toString());
+                    bufferedWriter.newLine();
                 }
-                bw.newLine();
-                bw.write(String.join(",", Managers.toString(historyManager)));
+                bufferedWriter.newLine();
+                bufferedWriter.write(String.join(",", Managers.toString(historyManager)));
             } catch (IOException exception) {
                 throw new ManagerSaveException("Something went wrong during saving the file");
             }
         }
     }
-
-    public Task fromString(String source) {
-        String[] data = source.split(",");
-        String taskType = data[1];
-        String taskName = data[2];
-        String taskDescription = data[4];
-        TaskStatus status = null;
-        for (TaskStatus item : TaskStatus.values())
-            if (item.toString().equals(data[3])) {
-                status = item;
-                break;
-            }
-        if (status == null) {
-            throw new InputMismatchException("Invalid task status presents in the history file");
-        }
-        if (taskType.equals(TASK.toString())) {
-            Task task = new Task(taskName, taskDescription, status, TASK);
-            task.setId(Integer.parseInt(data[0]));
-            return task;
-        } else if (taskType.equals(SUBTASK.toString())) {
-            int epicId = Integer.parseInt(data[5]);
-            SubTask subTask = new SubTask(taskName, taskDescription, status, epicId);
-            subTask.setId(Integer.parseInt(data[0]));
-            return subTask;
-        } else if (taskType.equals(EPIC.toString())) {
-            Epic epic = new Epic(taskName, taskDescription, status);
-            epic.setId(Integer.parseInt(data[0]));
-            return epic;
-        } else {
-            throw new InputMismatchException("Invalid history file");
-        }
-    }
 }
-

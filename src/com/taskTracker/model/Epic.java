@@ -5,7 +5,7 @@ import com.taskTracker.utils.TaskStatus;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static com.taskTracker.model.TaskType.*;
+import static com.taskTracker.utils.TaskType.EPIC;
 
 public class Epic extends Task {
     private final ArrayList<Integer> subtasksId;
@@ -37,6 +37,6 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-            return String.join(",", id.toString(), type.toString(), name, status.toString(),description);
+        return String.join(",", id.toString(), type.toString(), name, status.toString(), description);
     }
 }

@@ -1,4 +1,4 @@
-package com.taskTracker.model;
+package com.taskTracker.utils;
 
 public enum TaskType {
     TASK,

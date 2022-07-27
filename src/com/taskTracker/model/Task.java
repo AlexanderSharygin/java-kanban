@@ -1,8 +1,9 @@
 package com.taskTracker.model;
 
 import com.taskTracker.utils.TaskStatus;
+import com.taskTracker.utils.TaskType;
 
-import static com.taskTracker.model.TaskType.TASK;
+import static com.taskTracker.utils.TaskType.TASK;
 
 public class Task {
 

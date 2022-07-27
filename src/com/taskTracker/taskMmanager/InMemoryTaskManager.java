@@ -54,60 +54,57 @@ public class InMemoryTaskManager implements TaskManger {
 
     @Override
     public void removeAllTasks() {
-        tasks.keySet().forEach(k -> {
-            historyManager.remove(k);
-        });
+        tasks.keySet().forEach(k -> historyManager.remove(k));
         tasks.clear();
     }
 
     @Override
     public void removeAllEpics() {
-        epics.keySet().forEach(k -> {
-            historyManager.remove(k);
-        });
-        subTasks.keySet().forEach(k -> {
-            historyManager.remove(k);
-        });
+        epics.keySet().forEach(k -> historyManager.remove(k));
+        subTasks.keySet().forEach(k -> historyManager.remove(k));
         epics.clear();
         subTasks.clear();
     }
 
     @Override
     public void removeAllSubTasks() {
-        subTasks.keySet().forEach(k -> {
-            historyManager.remove(k);
-        });
-        epics.forEach((key, value) -> {
-            value.clearSubtasks();
-        });
+        subTasks.keySet().forEach(k -> historyManager.remove(k));
+        epics.forEach((key, value) -> value.clearSubtasks());
         subTasks.clear();
     }
 
     @Override
     public Task getTaskById(int id) {
-        Task task = tasks.get(id);
-        if (task != null) {
+        if (tasks.containsKey(id)) {
+            Task task = tasks.get(id);
             historyManager.add(task);
+            return task;
+        } else {
+            return null;
         }
-        return task;
     }
 
     @Override
     public Epic getEpicById(int id) {
-        Epic epic = epics.get(id);
-        if (epic != null) {
+        if (epics.containsKey(id)) {
+            Epic epic = epics.get(id);
             historyManager.add(epic);
+            return epic;
+        } else {
+            return null;
         }
-        return epic;
+
     }
 
     @Override
     public SubTask getSubTaskById(int id) {
-        SubTask subTask = subTasks.get(id);
-        if (subTask != null) {
+        if (subTasks.containsKey(id)) {
+            SubTask subTask = subTasks.get(id);
             historyManager.add(subTask);
+            return subTask;
+        } else {
+            return null;
         }
-        return subTask;
     }
 
     @Override

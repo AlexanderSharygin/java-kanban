@@ -1,6 +1,7 @@
 package com.taskTracker.model;
 
 import com.taskTracker.utils.TaskStatus;
+import com.taskTracker.utils.TaskType;
 
 public class SubTask extends Task {
 
