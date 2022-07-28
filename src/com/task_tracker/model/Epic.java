@@ -1,11 +1,9 @@
-package com.taskTracker.model;
-
-import com.taskTracker.utils.TaskStatus;
+package com.task_tracker.model;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-import static com.taskTracker.utils.TaskType.EPIC;
+import static com.task_tracker.model.TaskType.EPIC;
 
 public class Epic extends Task {
     private final ArrayList<Integer> subtasksId;

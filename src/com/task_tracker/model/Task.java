@@ -1,9 +1,6 @@
-package com.taskTracker.model;
+package com.task_tracker.model;
 
-import com.taskTracker.utils.TaskStatus;
-import com.taskTracker.utils.TaskType;
-
-import static com.taskTracker.utils.TaskType.TASK;
+import static com.task_tracker.model.TaskType.TASK;
 
 public class Task {
 
@@ -11,11 +8,6 @@ public class Task {
     protected String description;
     protected Integer id;
     protected TaskStatus status;
-
-    public TaskType getType() {
-        return type;
-    }
-
     protected TaskType type;
 
     public Task(String name, String description, TaskStatus status, TaskType type) {
@@ -32,11 +24,6 @@ public class Task {
         this.id = null;
         this.status = status;
         this.type = TASK;
-    }
-
-    @Override
-    public String toString() {
-        return String.join(",", id.toString(), type.toString(), name, status.toString(), description);
     }
 
     public String getName() {
@@ -71,6 +58,11 @@ public class Task {
         this.id = id;
     }
 
+    public TaskType getType() {
+        return type;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,5 +82,10 @@ public class Task {
             hash = hash + name.hashCode();
         }
         return hash;
+    }
+
+    @Override
+    public String toString() {
+        return String.join(",", id.toString(), type.toString(), name, status.toString(), description);
     }
 }

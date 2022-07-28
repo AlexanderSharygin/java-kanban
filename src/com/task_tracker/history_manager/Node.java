@@ -1,6 +1,6 @@
-package com.taskTracker.historyManager;
+package com.task_tracker.history_manager;
 
-import com.taskTracker.model.Task;
+import com.task_tracker.model.Task;
 
 public class Node {
 

@@ -1,12 +1,12 @@
-import com.taskTracker.model.Epic;
-import com.taskTracker.model.Task;
-import com.taskTracker.taskMmanager.FileBackedTasksManager;
-import com.taskTracker.taskMmanager.Managers;
+import com.task_tracker.model.Epic;
+import com.task_tracker.model.Task;
+import com.task_tracker.task_manager.FileBackedTasksManager;
+import com.task_tracker.task_manager.Managers;
 
 import java.io.File;
 import java.util.List;
 
-import static com.taskTracker.utils.TaskStatus.NEW;
+import static com.task_tracker.model.TaskStatus.NEW;
 
 public class Main {
 

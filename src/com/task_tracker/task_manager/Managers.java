@@ -1,13 +1,12 @@
-package com.taskTracker.taskMmanager;
+package com.task_tracker.task_manager;
 
-import com.taskTracker.historyManager.FileBackedHistoryManager;
-import com.taskTracker.historyManager.HistoryManager;
-import com.taskTracker.historyManager.InMemoryHistoryManager;
-import com.taskTracker.model.Epic;
-import com.taskTracker.model.SubTask;
-import com.taskTracker.model.Task;
-import com.taskTracker.utils.ManagerReadException;
-import com.taskTracker.utils.TaskStatus;
+import com.task_tracker.history_manager.FileBackedHistoryManager;
+import com.task_tracker.history_manager.HistoryManager;
+import com.task_tracker.history_manager.InMemoryHistoryManager;
+import com.task_tracker.model.Epic;
+import com.task_tracker.model.SubTask;
+import com.task_tracker.model.Task;
+import com.task_tracker.model.TaskStatus;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +15,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.taskTracker.utils.TaskType.*;
+import static com.task_tracker.model.TaskType.*;
 
 public class Managers {
 
@@ -33,13 +32,16 @@ public class Managers {
     }
 
     public static String toString(HistoryManager manager) {
-        List<String> history = manager.getTasks().stream().
-                map(k -> k.getId().toString()).collect(Collectors.toList());
+        List<String> history = manager.getTasks().stream()
+                .map(k -> k.getId().toString())
+                .collect(Collectors.toList());
         return String.join(",", history);
     }
 
     private static List<Integer> historyFromString(String value) {
-        return Arrays.stream(value.split(",")).map(Integer::parseInt).collect(Collectors.toList());
+        return Arrays.stream(value.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
     }
 
 

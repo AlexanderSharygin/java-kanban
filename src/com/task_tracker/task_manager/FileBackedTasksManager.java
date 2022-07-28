@@ -1,10 +1,9 @@
-package com.taskTracker.taskMmanager;
+package com.task_tracker.task_manager;
 
-import com.taskTracker.historyManager.HistoryManager;
-import com.taskTracker.model.Epic;
-import com.taskTracker.model.SubTask;
-import com.taskTracker.model.Task;
-import com.taskTracker.utils.ManagerSaveException;
+import com.task_tracker.history_manager.HistoryManager;
+import com.task_tracker.model.Epic;
+import com.task_tracker.model.SubTask;
+import com.task_tracker.model.Task;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -18,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    public static List<String> HEADER_COLUMNS = List.of("id", "type", "name", "status", "description", "epic");
+    private final List<String> HEADER_COLUMNS = List.of("id", "type", "name", "status", "description", "epic");
     private final String fileName;
     private boolean isSourceFileLocked;
 
@@ -27,7 +26,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.fileName = filePath;
         isSourceFileLocked = false;
         Path path = Paths.get(filePath);
-        if (!Files.exists(path)) {
+        if (Files.notExists(path)) {
             Files.createFile(path);
         }
     }

@@ -1,7 +1,4 @@
-package com.taskTracker.model;
-
-import com.taskTracker.utils.TaskStatus;
-import com.taskTracker.utils.TaskType;
+package com.task_tracker.model;
 
 public class SubTask extends Task {
 
