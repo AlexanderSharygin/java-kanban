@@ -1,14 +1,13 @@
 package com.task_tracker.task_manager;
 
+import com.task_tracker.history_manager.FileBackedHistoryManager;
 import com.task_tracker.history_manager.HistoryManager;
 import com.task_tracker.model.Epic;
 import com.task_tracker.model.SubTask;
 import com.task_tracker.model.Task;
+import com.task_tracker.utils.Converter;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,14 +15,16 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
+import static com.task_tracker.model.TaskType.*;
+
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private final List<String> HEADER_COLUMNS = List.of("id", "type", "name", "status", "description", "epic");
-    private final String fileName;
+    private final String filePath;
     private boolean isSourceFileLocked;
 
     public FileBackedTasksManager(String filePath) throws IOException {
         super();
-        this.fileName = filePath;
+        this.filePath = filePath;
         isSourceFileLocked = false;
         Path path = Paths.get(filePath);
         if (Files.notExists(path)) {
@@ -175,7 +176,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void save() {
         if (!isSourceFileLocked) {
-            try (Writer fileWriter = new FileWriter(fileName, StandardCharsets.UTF_8);
+            try (Writer fileWriter = new FileWriter(filePath, StandardCharsets.UTF_8);
                  BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
                 String header = String.join(",", HEADER_COLUMNS);
                 bufferedWriter.write(header);
@@ -193,10 +194,45 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     bufferedWriter.newLine();
                 }
                 bufferedWriter.newLine();
-                bufferedWriter.write(String.join(",", Managers.toString(historyManager)));
+                bufferedWriter.write(String.join(",", Converter.historyToString(historyManager)));
             } catch (IOException exception) {
                 throw new ManagerSaveException("Something went wrong during saving the file");
             }
+        }
+    }
+
+    public void loadFromFile() {
+        File file = new File(filePath);
+        try (Reader fileReader = new FileReader(file.getAbsolutePath(), StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+            isSourceFileLocked = true;
+            while (bufferedReader.ready()) {
+                String taskHistory = bufferedReader.readLine();
+                if (taskHistory.isEmpty() && taskHistory != null) {
+                    String historyRow = bufferedReader.readLine();
+                    List<Integer> itemIds = Converter.historyFromString(historyRow);
+                    FileBackedHistoryManager fileBackedHistoryManager = new FileBackedHistoryManager();
+                    this.historyManager = fileBackedHistoryManager;
+                    for (var itemId : itemIds) {
+                        this.getTaskById(itemId);
+                        this.getSubTaskById(itemId);
+                        this.getEpicById(itemId);
+                    }
+                    break;
+                } else if (Character.isDigit(taskHistory.charAt(0))) {
+                    Task task = Converter.taskFromString(taskHistory);
+                    if (task.getType().equals(TASK)) {
+                        this.addTask(task, task.getId());
+                    } else if (task.getType().equals(SUBTASK)) {
+                        this.addSubTask((SubTask) task, task.getId());
+                    } else if (task.getType().equals(EPIC)) {
+                        this.addEpic((Epic) task, task.getId());
+                    }
+                }
+            }
+            isSourceFileLocked = false;
+        } catch (IOException exception) {
+            throw new ManagerReadException("Something went wrong during reading the file");
         }
     }
 }

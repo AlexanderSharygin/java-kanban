@@ -1,11 +1,9 @@
 id,type,name,status,description,epic
-0,TASK,jjj,IN_PROGRESS,one
-9,TASK,jjj,NEW,one12
-1,EPIC,First,NEW,one
-6,EPIC,First,IN_PROGRESS,one
-3,SUBTASK,St1,IN_PROGRESS,St1One,0
-5,SUBTASK,St1,IN_PROGRESS,St1One,0
-7,SUBTASK,St1,IN_PROGRESS,St111One,6
-8,SUBTASK,St1,NEW,St12One,6
+0,TASK,FirstTask,NEW,one
+1,TASK,SecondTask,IN_PROGRESS,two
+2,EPIC,EpicOne,DONE,one
+5,EPIC,EpicTwo,NEW,eptwo
+3,SUBTASK,ST1,DONE,one,2
+4,SUBTASK,ST2,DONE,two,2
 
-5,3,0,1,9,6
+0,5,4,3,2
