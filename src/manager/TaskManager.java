@@ -23,15 +23,6 @@ public class TaskManager {
         this.idCounter = 0;
     }
 
-    public List<Task> getAllItems() {
-        ArrayList<Task> items = new ArrayList<>();
-        items.addAll(getTasks());
-        items.addAll(getEpics());
-        items.addAll(getSubTasks());
-
-        return items;
-    }
-
     public List<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
@@ -69,24 +60,22 @@ public class TaskManager {
 
     public void addTask(Task task) {
         if (task != null) {
-            task.setId(idCounter);
+            task.setId(++idCounter);
             tasks.put(idCounter, task);
-            idCounter++;
         }
     }
 
     public void addEpic(Epic epic) {
         if (epic != null) {
-            epic.setId(idCounter);
+            epic.setId(++idCounter);
             epic.setStatus(TaskStatus.NEW);
             epics.put(idCounter, epic);
-            idCounter++;
         }
     }
 
     public void addSubTask(SubTask subtask) {
         if (subtask != null) {
-            subtask.setId(idCounter);
+            subtask.setId(++idCounter);
             subTasks.put(idCounter, subtask);
             Epic epicForSubTask = epics.get(subtask.getEpicId());
             if (epicForSubTask != null) {
@@ -94,7 +83,6 @@ public class TaskManager {
                 TaskStatus epicStatus = calculateEpicStatus(subtask.getEpicId());
                 epicForSubTask.setStatus(epicStatus);
             }
-            idCounter++;
         }
     }
 
@@ -124,12 +112,6 @@ public class TaskManager {
         epicForSubTask.setStatus(calculateEpicStatus(subtask.getEpicId()));
     }
 
-    public void removeAllItems() {
-        removeAllTasks();
-        removeAllSubTasks();
-        removeAllEpics();
-    }
-
     public void removeAllTasks() {
         if (!tasks.isEmpty()) {
             tasks.clear();
@@ -150,27 +132,25 @@ public class TaskManager {
         }
     }
 
-    public void removeItemById(Integer id) {
-        if (tasks.get(id) != null) {
-            tasks.remove(id);
-            return;
-        }
-        if (subTasks.get(id) != null) {
-            int epicId = subTasks.get(id).getEpicId();
-            Epic epic = epics.get(epicId);
-            epic.getSubtasksId().remove(id);
-            subTasks.remove(id);
-            epic.setStatus(calculateEpicStatus(epicId));
-            return;
-        }
-        if (epics.containsKey(id)) {
-            List<Integer> subtasksId = epics.get(id).getSubtasksId();
-            subtasksId.forEach(subTasks::remove);
-            epics.remove(id);
-        } else {
-            throw new NoSuchElementException("Элемента с указанным id не существует");
-        }
+    public void removeTaskById(Integer id) {
+        checkIfTaskExist(id);
+        tasks.remove(id);
+    }
 
+    public void removeSubTaskById(Integer id) {
+        checkIfSubTaskExist(id);
+        int epicId = subTasks.get(id).getEpicId();
+        Epic epic = epics.get(epicId);
+        epic.getSubtasksId().remove(id);
+        subTasks.remove(id);
+        epic.setStatus(calculateEpicStatus(epicId));
+    }
+
+    public void removeEpicById(Integer id) {
+        checkIfEpicExist(id);
+        List<Integer> subtasksId = epics.get(id).getSubtasksId();
+        subtasksId.forEach(subTasks::remove);
+        epics.remove(id);
     }
 
     private void checkIfEpicExist(int epicId) {
