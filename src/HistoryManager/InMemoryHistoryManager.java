@@ -1,6 +1,8 @@
 package HistoryManager;
 
 
+import task.Epic;
+import task.SubTask;
 import task.Task;
 
 import java.util.ArrayList;
@@ -22,10 +24,24 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void add(Task task) {
         if (tasks.size() < 10) {
-            tasks.add(task);
+            addItem(task);
         } else {
             tasks.removeFirst();
-            tasks.add(task);
+            addItem(task);
+        }
+    }
+
+    private void addItem(Task task) {
+        if (task instanceof Epic) {
+            Epic epic = new Epic(task.getName(), task.getDescription());
+            epic.setId(task.getId());
+            tasks.add(epic);
+        } else if (task instanceof SubTask) {
+            SubTask subTask = new SubTask(task.getName(), task.getStatus(), task.getDescription(), ((SubTask) task).getEpicId());
+            subTask.setId(task.getId());
+            tasks.add(subTask);
+        } else {
+            tasks.add(new Task(task.getName(), task.getStatus(), task.getDescription()));
         }
     }
 }

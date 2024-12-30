@@ -2,10 +2,14 @@ package task;
 
 public class SubTask extends Task {
 
-    private final Integer epicId;
+    private Integer epicId;
 
     public int getEpicId() {
         return epicId;
+    }
+
+    public void setEpicId(int epicId) {
+        this.epicId = epicId;
     }
 
     public SubTask(String name, TaskStatus status, String description, int epicId) {

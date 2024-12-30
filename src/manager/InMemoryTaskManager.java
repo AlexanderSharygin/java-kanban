@@ -23,7 +23,7 @@ public class InMemoryTaskManager implements TaskManager {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
-        historyManager = Managers.getDefaultHistoryManager();
+        historyManager = Managers.getDefaultHistory();
         this.idCounter = 0;
     }
 
