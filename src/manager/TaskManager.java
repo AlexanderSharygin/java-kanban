@@ -3,190 +3,47 @@ package manager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
-import task.TaskStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
 
-public class TaskManager {
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epics;
-    private final HashMap<Integer, SubTask> subTasks;
-    private int idCounter;
+public interface TaskManager {
+    List<Task> getTasks();
 
-    public TaskManager() {
-        this.tasks = new HashMap<>();
-        this.epics = new HashMap<>();
-        this.subTasks = new HashMap<>();
-        this.idCounter = 0;
-    }
+    List<Epic> getEpics();
 
-    public List<Task> getTasks() {
-        return new ArrayList<>(tasks.values());
-    }
+    List<SubTask> getSubTasks();
 
-    public List<Epic> getEpics() {
-        return new ArrayList<>(epics.values());
-    }
+    List<SubTask> getSubTasksByEpicId(int epicId);
 
+    Task getTaskById(int id);
 
-    public List<SubTask> getSubTasks() {
-        return new ArrayList<>(subTasks.values());
-    }
+    Epic getEpicById(int id);
 
-    public List<SubTask> getSubTasksByEpicId(int epicId) {
-        checkIfEpicExist(epicId);
-        List<Integer> subTasksId = epics.get(epicId).getSubtasksId();
-        return subTasksId.stream().map(subTasks::get).toList();
-    }
+    SubTask getSubTaskById(int id);
 
-    public Task getTaskById(int id) {
-        checkIfTaskExist(id);
-        return tasks.get(id);
-    }
+    void addTask(Task task);
 
-    public Epic getEpicById(int id) {
-        checkIfEpicExist(id);
-        return epics.get(id);
-    }
+    void addEpic(Epic epic);
 
-    public SubTask getSubTaskById(int id) {
-        checkIfSubTaskExist(id);
-        return subTasks.get(id);
-    }
+    void addSubTask(SubTask subtask);
 
+    void updateTask(Task task);
 
-    public void addTask(Task task) {
-        if (task != null) {
-            task.setId(++idCounter);
-            tasks.put(idCounter, task);
-        }
-    }
+    void updateEpic(Epic epic);
 
-    public void addEpic(Epic epic) {
-        if (epic != null) {
-            epic.setId(++idCounter);
-            epic.setStatus(TaskStatus.NEW);
-            epics.put(idCounter, epic);
-        }
-    }
+    void updateSubtask(SubTask subtask);
 
-    public void addSubTask(SubTask subtask) {
-        if (subtask != null) {
-            subtask.setId(++idCounter);
-            subTasks.put(idCounter, subtask);
-            Epic epicForSubTask = epics.get(subtask.getEpicId());
-            if (epicForSubTask != null) {
-                epicForSubTask.addSubtask(subtask);
-                TaskStatus epicStatus = calculateEpicStatus(subtask.getEpicId());
-                epicForSubTask.setStatus(epicStatus);
-            }
-        }
-    }
+    void removeAllTasks();
 
-    public void updateTask(Task task) {
-        checkIfTaskExist(task.getId());
-        Task existedTask = tasks.get(task.getId());
-        existedTask.setName(task.getName());
-        existedTask.setDescription(task.getDescription());
-        existedTask.setStatus(task.getStatus());
-    }
+    void removeAllEpics();
 
-    public void updateEpic(Epic epic) {
-        checkIfEpicExist(epic.getId());
-        Epic existedEpic = epics.get(epic.getId());
-        existedEpic.setName(epic.getName());
-        existedEpic.setDescription(epic.getDescription());
-    }
+    void removeAllSubTasks();
 
-    public void updateSubtask(SubTask subtask) {
-        checkIfSubTaskExist(subtask.getId());
-        checkIfEpicExist(subtask.getEpicId());
-        SubTask existedSubTask = subTasks.get(subtask.getId());
-        existedSubTask.setName(subtask.getName());
-        existedSubTask.setDescription(subtask.getDescription());
-        existedSubTask.setStatus(subtask.getStatus());
-        Epic epicForSubTask = epics.get(existedSubTask.getEpicId());
-        epicForSubTask.setStatus(calculateEpicStatus(subtask.getEpicId()));
-    }
+    void removeTaskById(Integer id);
 
-    public void removeAllTasks() {
-        if (!tasks.isEmpty()) {
-            tasks.clear();
-        }
-    }
+    void removeSubTaskById(Integer id);
 
-    public void removeAllEpics() {
-        if (!epics.isEmpty()) {
-            epics.clear();
-            subTasks.clear();
-        }
-    }
+    void removeEpicById(Integer id);
 
-    public void removeAllSubTasks() {
-        if (!subTasks.isEmpty()) {
-            subTasks.clear();
-            epics.values().forEach(k -> k.setStatus(TaskStatus.NEW));
-        }
-    }
-
-    public void removeTaskById(Integer id) {
-        checkIfTaskExist(id);
-        tasks.remove(id);
-    }
-
-    public void removeSubTaskById(Integer id) {
-        checkIfSubTaskExist(id);
-        int epicId = subTasks.get(id).getEpicId();
-        Epic epic = epics.get(epicId);
-        epic.getSubtasksId().remove(id);
-        subTasks.remove(id);
-        epic.setStatus(calculateEpicStatus(epicId));
-    }
-
-    public void removeEpicById(Integer id) {
-        checkIfEpicExist(id);
-        List<Integer> subtasksId = epics.get(id).getSubtasksId();
-        subtasksId.forEach(subTasks::remove);
-        epics.remove(id);
-    }
-
-    private void checkIfEpicExist(int epicId) {
-        if (!epics.containsKey(epicId)) {
-            throw new NoSuchElementException("Эпика с указанным id не существует");
-        }
-    }
-
-    private void checkIfTaskExist(int taskId) {
-        if (!tasks.containsKey(taskId)) {
-            throw new NoSuchElementException("Задачи с указанным id не существует");
-        }
-    }
-
-    private void checkIfSubTaskExist(int subTaskId) {
-        if (!subTasks.containsKey(subTaskId)) {
-            throw new NoSuchElementException("Подзадачи с указанным id не существует");
-        }
-    }
-
-    private TaskStatus calculateEpicStatus(int epicId) {
-        List<SubTask> subTasksList = subTasks.values().stream()
-                .filter(k -> k.getEpicId() == epicId).toList();
-        if (subTasksList.isEmpty()) {
-            return TaskStatus.NEW;
-        }
-        List<SubTask> newSubTasks = subTasksList.stream()
-                .filter(k -> k.getStatus().equals(TaskStatus.NEW)).toList();
-        List<SubTask> doneSubTasks = subTasksList.stream()
-                .filter(k -> k.getStatus().equals(TaskStatus.DONE)).toList();
-        if (subTasksList.size() == newSubTasks.size()) {
-            return TaskStatus.NEW;
-        }
-        if (subTasksList.size() == doneSubTasks.size()) {
-            return TaskStatus.DONE;
-        }
-        return TaskStatus.IN_PROGRESS;
-    }
+    List<Task> getHistory();
 }
