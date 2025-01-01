@@ -183,6 +183,11 @@ public class InMemoryTaskManager implements TaskManager {
         epics.remove(id);
     }
 
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
+
     private void checkIfEpicExist(int epicId) {
         if (!epics.containsKey(epicId)) {
             throw new NoSuchElementException("Эпика с указанным id не существует");
@@ -218,10 +223,5 @@ public class InMemoryTaskManager implements TaskManager {
             return TaskStatus.DONE;
         }
         return TaskStatus.IN_PROGRESS;
-    }
-
-    @Override
-    public List<Task> getHistory() {
-        return historyManager.getHistory();
     }
 }
