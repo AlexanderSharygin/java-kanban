@@ -67,7 +67,7 @@ public class HistoryManagerTests {
         taskManager.getTaskById(1);
         taskManager.getTaskById(1);
         taskManager.getTaskById(1);
-        assertEquals(3, taskManager.getHistory().size(), "Задача не добавлена в историю");
+        assertEquals(1, taskManager.getHistory().size(), "Задача не добавлена в историю");
     }
 
     @Test
@@ -81,13 +81,10 @@ public class HistoryManagerTests {
         task1.setStatus(IN_PROGRESS);
         taskManager.updateTask(task1);
         taskManager.getTaskById(1);
-        assertEquals(2, taskManager.getHistory().size(), "Задача не добавлена в историю");
-        assertEquals("upd", taskManager.getHistory().get(1).getDescription(), "Неверные данные задачи");
-        assertEquals("one", taskManager.getHistory().get(0).getDescription(), "Неверные данные задачи");
-        assertEquals("T2", taskManager.getHistory().get(1).getName(), "Неверные данные задачи");
-        assertEquals("T1", taskManager.getHistory().get(0).getName(), "Неверные данные задачи");
-        assertEquals(IN_PROGRESS, taskManager.getHistory().get(1).getStatus(), "Неверные данные задачи");
-        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(), "Неверные данные задачи");
+        assertEquals(1, taskManager.getHistory().size(), "Задача не добавлена в историю");
+        assertEquals("upd", taskManager.getHistory().get(0).getDescription(), "Неверные данные задачи");
+        assertEquals("T2", taskManager.getHistory().get(0).getName(), "Неверные данные задачи");
+        assertEquals(IN_PROGRESS, taskManager.getHistory().get(0).getStatus(), "Неверные данные задачи");
     }
 
     @Test
@@ -99,7 +96,7 @@ public class HistoryManagerTests {
         taskManager.getSubTaskById(2);
         taskManager.getSubTaskById(2);
         taskManager.getSubTaskById(2);
-        assertEquals(3, taskManager.getHistory().size(), "Подзадача не добавлена в историю");
+        assertEquals(1, taskManager.getHistory().size(), "Подзадача не добавлена в историю");
     }
 
     @Test
@@ -118,17 +115,12 @@ public class HistoryManagerTests {
         subtask.setEpicId(2);
         taskManager.updateSubtask(subtask);
         taskManager.getSubTaskById(3);
-        assertEquals(2, taskManager.getHistory().size(), "Задача не добавлена в историю");
-        assertEquals("upd", taskManager.getHistory().get(1).getDescription(), "Неверные данные задачи");
-        assertEquals("one", taskManager.getHistory().get(0).getDescription(), "Неверные данные задачи");
-        assertEquals("T2", taskManager.getHistory().get(1).getName(), "Неверные данные задачи");
-        assertEquals("T1", taskManager.getHistory().get(0).getName(), "Неверные данные задачи");
-        assertEquals(IN_PROGRESS, taskManager.getHistory().get(1).getStatus(), "Неверные данные задачи");
-        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(), "Неверные данные задачи");
-        SubTask subTask1 = (SubTask) taskManager.getHistory().get(1);
-        SubTask subTask2 = (SubTask) taskManager.getHistory().get(0);
+        assertEquals(1, taskManager.getHistory().size(), "Задача не добавлена в историю");
+        assertEquals("upd", taskManager.getHistory().get(0).getDescription(), "Неверные данные задачи");
+        assertEquals("T2", taskManager.getHistory().get(0).getName(), "Неверные данные задачи");
+        assertEquals(IN_PROGRESS, taskManager.getHistory().get(0).getStatus(), "Неверные данные задачи");
+        SubTask subTask1 = (SubTask) taskManager.getHistory().get(0);
         assertEquals(2, subTask1.getEpicId(), "Неверные данные задачи");
-        assertEquals(1, subTask2.getEpicId(), "Неверные данные задачи");
     }
 
     @Test
@@ -140,11 +132,9 @@ public class HistoryManagerTests {
         epic1.setName("upd");
         taskManager.updateEpic(epic1);
         taskManager.getEpicById(1);
-        assertEquals(2, taskManager.getHistory().size(), "Задача не добавлена в историю");
-        assertEquals("upd", taskManager.getHistory().get(1).getDescription(), "Неверные данные задачи");
-        assertEquals("1", taskManager.getHistory().get(0).getDescription(), "Неверные данные задачи");
-        assertEquals("upd", taskManager.getHistory().get(1).getName(), "Неверные данные задачи");
-        assertEquals("Epic1", taskManager.getHistory().get(0).getName(), "Неверные данные задачи");
+        assertEquals(1, taskManager.getHistory().size(), "Задача не добавлена в историю");
+        assertEquals("upd", taskManager.getHistory().get(0).getDescription(), "Неверные данные задачи");
+        assertEquals("upd", taskManager.getHistory().get(0).getName(), "Неверные данные задачи");
     }
 
     @Test
@@ -154,7 +144,7 @@ public class HistoryManagerTests {
         taskManager.getEpicById(1);
         taskManager.getEpicById(1);
         taskManager.getEpicById(1);
-        assertEquals(3, taskManager.getHistory().size(), "Эпик не добавлен в историю");
+        assertEquals(1, taskManager.getHistory().size(), "Эпик не добавлен в историю");
     }
 
 
@@ -178,9 +168,9 @@ public class HistoryManagerTests {
         taskManager.getSubTaskById(3);
         taskManager.getTaskById(2);
         taskManager.getEpicById(1);
-        assertEquals(10, taskManager.getHistory().size(), "История содержит более 10 записей");
-        assertEquals(1, taskManager.getHistory().get(0).getId(), "Первая запись истории неверна");
-        assertEquals(1, taskManager.getHistory().get(9).getId(), "Последняя запись истории неверна");
+        assertEquals(3, taskManager.getHistory().size(), "История содержит более 10 записей");
+        assertEquals(3, taskManager.getHistory().get(0).getId(), "Первая запись истории неверна");
+        assertEquals(1, taskManager.getHistory().get(2).getId(), "Последняя запись истории неверна");
     }
 
 
