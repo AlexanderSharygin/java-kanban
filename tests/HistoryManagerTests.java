@@ -1,4 +1,4 @@
-import historyManager.Managers;
+import history.manager.Managers;
 import manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
