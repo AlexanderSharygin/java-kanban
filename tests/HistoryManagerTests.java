@@ -173,5 +173,402 @@ public class HistoryManagerTests {
         assertEquals(1, taskManager.getHistory().get(2).getId(), "Последняя запись истории неверна");
     }
 
+    @Test
+    public void removedTaskNotExistInHistoryTaskInMiddleOfHistory() {
+        Task task1 = new Task("T1", NEW, "one");
+        Task task2 = new Task("T2", NEW, "two");
+        Task task3 = new Task("T3", NEW, "three");
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(3);
+        taskManager.removeTaskById(2);
+        assertEquals(2, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(task1, taskManager.getHistory().get(0), "Задачи в историю отображаются неверно");
+        assertEquals(task3, taskManager.getHistory().get(1), "Задачи в историю отображаются неверно");
+    }
 
+    @Test
+    public void removedTaskNotExistInHistoryTaskAtEndOfHistory() {
+        Task task1 = new Task("T1", NEW, "one");
+        Task task2 = new Task("T2", NEW, "two");
+        Task task3 = new Task("T3", NEW, "three");
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(3);
+        taskManager.removeTaskById(3);
+        assertEquals(2, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(task1, taskManager.getHistory().get(0), "Задачи в историю отображаются неверно");
+        assertEquals(task2, taskManager.getHistory().get(1), "Задачи в историю отображаются неверно");
+    }
+
+    @Test
+    public void removedTaskNotExistInHistoryTaskAtStartOfHistory() {
+        Task task1 = new Task("T1", NEW, "one");
+        Task task2 = new Task("T2", NEW, "two");
+        Task task3 = new Task("T3", NEW, "three");
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(3);
+        taskManager.removeTaskById(1);
+        assertEquals(2, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(task2, taskManager.getHistory().get(0), "Задачи в историю отображаются неверно");
+        assertEquals(task3, taskManager.getHistory().get(1), "Задачи в историю отображаются неверно");
+    }
+
+    @Test
+    public void removedSubTaskNotExistInHistory() {
+        Epic epic = new Epic("T1", "one");
+        SubTask st1 = new SubTask("T1", NEW, "one", 1);
+        SubTask st2 = new SubTask("T2", NEW, "two", 1);
+        Task task1 = new Task("T1", NEW, "one");
+        taskManager.addEpic(epic);
+        taskManager.addSubTask(st1);
+        taskManager.addSubTask(st2);
+        taskManager.addTask(task1);
+        taskManager.getEpicById(1);
+        taskManager.getSubTaskById(2);
+        taskManager.getSubTaskById(3);
+        taskManager.getTaskById(4);
+        taskManager.getSubTaskById(2);
+        taskManager.removeSubTaskById(2);
+        taskManager.removeSubTaskById(3);
+        assertEquals(2, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(task1, taskManager.getHistory().get(1), "Задачи в историю отображаются неверно");
+        assertEquals(epic, taskManager.getHistory().get(0), "Задачи в историю отображаются неверно");
+    }
+
+    @Test
+    public void updatedTaskNotUpdatedInHistoryAndCorrectlyRemoved() {
+        Task task1 = new Task("T1", NEW, "one");
+        Task task2 = new Task("T2", NEW, "two");
+        Task task3 = new Task("T3", NEW, "three");
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(3);
+        task2.setStatus(IN_PROGRESS);
+        task2.setName("upd");
+        task2.setDescription("upd");
+        assertEquals(3, taskManager.getHistory().size(), "Задачи в истории отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(1).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T2", taskManager.getHistory().get(1).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("two", taskManager.getHistory().get(1).getDescription(),
+                "Задачи в истории отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(2).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T3", taskManager.getHistory().get(2).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("three", taskManager.getHistory().get(2).getDescription(),
+                "Задачи в истории отображаются неверно");
+        taskManager.removeTaskById(2);
+        assertEquals(2, taskManager.getHistory().size(), "Задачи в истории отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(1).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T3", taskManager.getHistory().get(1).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("three", taskManager.getHistory().get(1).getDescription(),
+                "Задачи в истории отображаются неверно");
+    }
+
+    @Test
+    public void updatedTaskNotUpdatedInHistoryAndCorrectlyUpdatedAfterGet() {
+        Task task1 = new Task("T1", NEW, "one");
+        Task task2 = new Task("T2", NEW, "two");
+        Task task3 = new Task("T3", NEW, "three");
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        taskManager.addTask(task3);
+        taskManager.getTaskById(1);
+        taskManager.getTaskById(2);
+        taskManager.getTaskById(3);
+        task2.setStatus(IN_PROGRESS);
+        task2.setName("upd");
+        task2.setDescription("upd");
+        assertEquals(3, taskManager.getHistory().size(), "Задачи в истории отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(1).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T2", taskManager.getHistory().get(1).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("two", taskManager.getHistory().get(1).getDescription(),
+                "Задачи в истории отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(2).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T3", taskManager.getHistory().get(2).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("three", taskManager.getHistory().get(2).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        taskManager.getTaskById(2);
+
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(IN_PROGRESS, taskManager.getHistory().get(2).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("upd", taskManager.getHistory().get(2).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("upd", taskManager.getHistory().get(2).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(1).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T3", taskManager.getHistory().get(1).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("three", taskManager.getHistory().get(1).getDescription(),
+                "Задачи в истории отображаются неверно");
+    }
+
+
+    @Test
+    public void updatedSubTaskNotUpdatedInHistoryAndCorrectlyRemoved() {
+        Epic epic = new Epic("E1", "one");
+        SubTask st1 = new SubTask("ST1", NEW, "one", 1);
+        SubTask st2 = new SubTask("ST2", NEW, "two", 1);
+        Task task1 = new Task("T1", NEW, "one");
+        taskManager.addEpic(epic);
+        taskManager.addSubTask(st1);
+        taskManager.addSubTask(st2);
+        taskManager.addTask(task1);
+        taskManager.getEpicById(1);
+        taskManager.getSubTaskById(2);
+        taskManager.getSubTaskById(3);
+        taskManager.getTaskById(4);
+        taskManager.getSubTaskById(2);
+
+        st1.setStatus(IN_PROGRESS);
+        st1.setName("upd");
+        st2.setDescription("upd");
+        st2.setStatus(IN_PROGRESS);
+        st2.setName("upd");
+        st2.setDescription("upd");
+        taskManager.updateSubtask(st1);
+        taskManager.updateSubtask(st2);
+
+        assertEquals(4, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("E1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(1).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("ST2", taskManager.getHistory().get(1).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("two", taskManager.getHistory().get(1).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(2).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(2).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(2).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(3).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("ST1", taskManager.getHistory().get(3).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(3).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        taskManager.removeSubTaskById(2);
+        taskManager.removeSubTaskById(3);
+
+        assertEquals(2, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("E1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(1).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(1).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(1).getDescription(),
+                "Задачи в истории отображаются неверно");
+    }
+
+    @Test
+    public void updatedSubTaskNotUpdatedInHistoryAndCorrectlyUpdatedAfterGet() {
+        Epic epic = new Epic("E1", "one");
+        SubTask st1 = new SubTask("ST1", NEW, "one", 1);
+        SubTask st2 = new SubTask("ST2", NEW, "two", 1);
+        Task task1 = new Task("T1", NEW, "one");
+        taskManager.addEpic(epic);
+        taskManager.addSubTask(st1);
+        taskManager.addSubTask(st2);
+        taskManager.addTask(task1);
+        taskManager.getEpicById(1);
+        taskManager.getSubTaskById(2);
+        taskManager.getSubTaskById(3);
+        taskManager.getTaskById(4);
+        taskManager.getSubTaskById(2);
+
+        st1.setStatus(IN_PROGRESS);
+        st1.setName("upd");
+        st2.setDescription("upd");
+        st2.setStatus(IN_PROGRESS);
+        st2.setName("upd");
+        st2.setDescription("upd");
+        taskManager.updateSubtask(st1);
+        taskManager.updateSubtask(st2);
+
+
+        assertEquals(4, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("E1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(1).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("ST2", taskManager.getHistory().get(1).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("two", taskManager.getHistory().get(1).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(2).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(2).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(2).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(3).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("ST1", taskManager.getHistory().get(3).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(3).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        taskManager.getSubTaskById(3);
+
+        assertEquals(4, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("E1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(1).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(1).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(1).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(2).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("ST1", taskManager.getHistory().get(2).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(2).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(IN_PROGRESS, taskManager.getHistory().get(3).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("upd", taskManager.getHistory().get(3).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("upd", taskManager.getHistory().get(3).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        taskManager.getEpicById(1);
+
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(NEW, taskManager.getHistory().get(1).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("ST1", taskManager.getHistory().get(1).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(1).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(IN_PROGRESS, taskManager.getHistory().get(2).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("upd", taskManager.getHistory().get(2).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("upd", taskManager.getHistory().get(2).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        assertEquals(IN_PROGRESS, taskManager.getHistory().get(3).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("E1", taskManager.getHistory().get(3).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(3).getDescription(),
+                "Задачи в истории отображаются неверно");
+
+        taskManager.removeEpicById(1);
+        assertEquals(1, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(NEW, taskManager.getHistory().get(0).getStatus(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("T1", taskManager.getHistory().get(0).getName(),
+                "Задачи в истории отображаются неверно");
+        assertEquals("one", taskManager.getHistory().get(0).getDescription(),
+                "Задачи в истории отображаются неверно");
+    }
+
+    @Test
+    public void removedEpicNotExistInHistory() {
+        Epic epic = new Epic("T1", "one");
+        SubTask st1 = new SubTask("T1", NEW, "one", 1);
+        SubTask st2 = new SubTask("T2", NEW, "two", 1);
+        Task task1 = new Task("T1", NEW, "one");
+        taskManager.addEpic(epic);
+        taskManager.addSubTask(st1);
+        taskManager.addSubTask(st2);
+        taskManager.addTask(task1);
+        taskManager.getEpicById(1);
+        taskManager.getSubTaskById(2);
+        taskManager.getSubTaskById(3);
+        taskManager.getTaskById(4);
+        taskManager.getSubTaskById(2);
+        taskManager.removeEpicById(1);
+        assertEquals(1, taskManager.getHistory().size(), "Задачи в историю отображаются неверно");
+        assertEquals(task1, taskManager.getHistory().get(0), "Задачи в историю отображаются неверно");
+    }
 }
