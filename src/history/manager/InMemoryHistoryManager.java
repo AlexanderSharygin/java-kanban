@@ -18,16 +18,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         this.tasks = new HashMap<>();
     }
 
-    public List<Task> getTasks() {
-        List<Task> items = new ArrayList<>();
-        Node current = head;
-        while (current != null) {
-            items.add(current.value);
-            current = current.after;
-        }
-        return items;
-    }
-
     @Override
     public void add(Task task) {
         if (task == null) {
@@ -87,5 +77,15 @@ public class InMemoryHistoryManager implements HistoryManager {
             before.after = after;
             after.before = before;
         }
+    }
+
+    private List<Task> getTasks() {
+        List<Task> items = new ArrayList<>();
+        Node current = head;
+        while (current != null) {
+            items.add(current.value);
+            current = current.after;
+        }
+        return items;
     }
 }
