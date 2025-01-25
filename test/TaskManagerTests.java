@@ -464,4 +464,16 @@ public class TaskManagerTests {
         taskManager.removeSubTaskById(3);
         assertEquals(NEW, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быт NEW");
     }
+
+    @Test
+    public void epicNotContainsRemovedSubTasks() {
+        taskManager.addEpic(epic);
+        taskManager.addSubTask(subTaskNew1);
+        taskManager.addSubTask(subTaskInProgress2);
+        taskManager.removeSubTaskById(2);
+        assertEquals(1, taskManager.getEpicById(1).getSubtasksId().size(),
+                "Количество подзадач в эпике больше ожидаемого" );
+        assertEquals(3, taskManager.getEpicById(1).getSubtasksId().get(0),
+                "Id подзадачи не верен");
+    }
 }
