@@ -1,13 +1,26 @@
 import history.manager.Managers;
+import manager.FileBackedTaskManager;
 import manager.TaskManager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
 import task.TaskStatus;
 
+import java.io.IOException;
+
 public class Main {
 
     public static void main(String[] args) {
+       try {
+           FileBackedTaskManager manager = new FileBackedTaskManager("resources/tasks.csv");
+           manager.loadFromFile();
+           System.out.println("");
+       }
+       catch (IOException e) {
+           throw new RuntimeException(e);
+       }
+
+
         TaskManager taskManager = Managers.getDefault();
         Task task1 = new Task("Task 1", TaskStatus.NEW, "Task 1");
         Task task2 = new Task("Task 2", TaskStatus.IN_PROGRESS, "Task 2");
