@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private final List<String> HEADER_COLUMNS = List.of("id", "type", "name", "status", "description", "epic");
+    private final List<String> headerColumns = List.of("id", "type", "name", "status", "description", "epic");
     private final String filePath;
 
     public FileBackedTaskManager(String filePath) {
@@ -180,7 +180,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private void save() {
         try (Writer fileWriter = new FileWriter(filePath, StandardCharsets.UTF_8);
              BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-            String header = String.join(",", HEADER_COLUMNS);
+            String header = String.join(",", headerColumns);
             bufferedWriter.write(header);
             bufferedWriter.newLine();
             for (var task : tasks.values()) {
