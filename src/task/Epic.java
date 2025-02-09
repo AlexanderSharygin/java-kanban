@@ -3,6 +3,8 @@ package task;
 import java.util.ArrayList;
 import java.util.List;
 
+import static task.TaskType.EPIC;
+
 public class Epic extends Task {
 
     private final List<Integer> subtasksId;
@@ -29,7 +31,6 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{id=%d, name='%s', description='%s', status=%s, subTasks=%s}\n"
-                .formatted(id, name, description, status.getStatus(), subtasksId.toString());
+        return String.join(",", id.toString(), EPIC.toString(), name, status.toString(), description);
     }
 }

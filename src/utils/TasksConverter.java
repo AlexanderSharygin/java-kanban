@@ -1,4 +1,4 @@
-package manager;
+package utils;
 
 
 import task.Epic;
@@ -11,10 +11,13 @@ import java.util.InputMismatchException;
 import static task.TaskType.*;
 
 
-public class Converter {
+public class TasksConverter {
 
 
     public static Task taskFromString(String source) {
+        if (source == null || source.isEmpty()) {
+            return null;
+        }
         String[] data = source.split(",");
         String taskType = data[1];
         String taskName = data[2];

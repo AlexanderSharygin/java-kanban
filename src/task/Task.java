@@ -2,6 +2,8 @@ package task;
 
 import java.util.Objects;
 
+import static task.TaskType.TASK;
+
 public class Task implements Cloneable {
     protected Integer id;
     protected String name;
@@ -63,7 +65,7 @@ public class Task implements Cloneable {
 
     @Override
     public String toString() {
-        return "Task{id=%d, name='%s', description='%s', status=%s}\n".formatted(id, name, description, status.getStatus());
+        return String.join(",", id.toString(), TASK.toString(), name, status.toString(), description);
     }
 
     @Override

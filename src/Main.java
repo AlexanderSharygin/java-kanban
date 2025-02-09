@@ -1,27 +1,16 @@
-import history.manager.Managers;
 import manager.FileBackedTaskManager;
-import manager.TaskManager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
 import task.TaskStatus;
-
-import java.io.IOException;
+import utils.CsvEditor;
 
 public class Main {
 
     public static void main(String[] args) {
-       try {
-           FileBackedTaskManager manager = new FileBackedTaskManager("resources/tasks.csv");
-           manager.loadFromFile();
-           System.out.println("");
-       }
-       catch (IOException e) {
-           throw new RuntimeException(e);
-       }
-
-
-        TaskManager taskManager = Managers.getDefault();
+        String filePath = "resources/tasks.csv";
+        FileBackedTaskManager taskManager = new FileBackedTaskManager(filePath);
+        taskManager.loadFromFile();
         Task task1 = new Task("Task 1", TaskStatus.NEW, "Task 1");
         Task task2 = new Task("Task 2", TaskStatus.IN_PROGRESS, "Task 2");
         Epic epic1 = new Epic("Epic 1", "Epic 1");
@@ -53,6 +42,7 @@ public class Main {
         System.out.println(taskManager.getHistory());
         taskManager.getSubTaskById(7);
         System.out.println(taskManager.getHistory());
+        CsvEditor.clearFile(filePath);
     }
 
 }

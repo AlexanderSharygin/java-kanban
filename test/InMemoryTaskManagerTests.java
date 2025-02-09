@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static task.TaskStatus.*;
 
 
-public class TaskManagerTests {
+public class InMemoryTaskManagerTests {
 
     Epic epic;
     SubTask subTaskNew1;
@@ -25,7 +25,7 @@ public class TaskManagerTests {
     Task taskNew1;
     Task taskNew2;
 
-    public TaskManagerTests() {
+    public InMemoryTaskManagerTests() {
         epic = new Epic("EpicOne", "one");
         subTaskNew1 = new SubTask("SubTaskN1", NEW, "stN1", 1);
         subTaskNew2 = new SubTask("SubTaskN2", NEW, "stN2", 1);
