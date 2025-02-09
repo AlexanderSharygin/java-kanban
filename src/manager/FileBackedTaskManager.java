@@ -85,6 +85,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
+    public void addTaskFromLoader(Task task) {
+        super.addTask(task);
+    }
+
+    public void addEpicFromLoader(Epic epic) {
+        super.addEpic(epic);
+
+    }
+
+    public void addSubTaskFromLoader(SubTask subtask) {
+        super.addSubTask(subtask);
+    }
+
     @Override
     public void updateTask(Task task) {
         super.updateTask(task);
@@ -151,11 +164,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = TasksConverter.taskFromString(taskString);
                 if (task != null) {
                     if (task instanceof SubTask) {
-                        addSubTask((SubTask) task);
+                        addSubTaskFromLoader((SubTask) task);
                     } else if (task instanceof Epic) {
-                        addEpic((Epic) task);
+                        addEpicFromLoader((Epic) task);
                     } else {
-                        addTask(task);
+                        addTaskFromLoader(task);
                     }
                 }
             }
