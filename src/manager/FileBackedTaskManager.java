@@ -6,14 +6,17 @@ import exception.ManagerSaveException;
 import task.Epic;
 import task.SubTask;
 import task.Task;
-import utils.TasksConverter;
+import task.TaskStatus;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.InputMismatchException;
 import java.util.List;
+
+import static task.TaskType.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final List<String> headerColumns = List.of("id", "type", "name", "status", "description", "epic");
@@ -30,6 +33,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 throw new CreateFileException("Невозможно создать новый файл");
             }
         }
+        loadFromFile();
     }
 
     @Override
@@ -152,7 +156,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
-    public void loadFromFile() {
+    private void loadFromFile() {
         File file = new File(filePath);
         try (Reader fileReader = new FileReader(file.getAbsolutePath(), StandardCharsets.UTF_8);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
@@ -161,7 +165,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 if (taskString.startsWith("id")) {
                     continue;
                 }
-                Task task = TasksConverter.taskFromString(taskString);
+                Task task = taskFromString(taskString);
                 if (task != null) {
                     if (task instanceof SubTask) {
                         addSubTaskFromLoader((SubTask) task);
@@ -198,6 +202,40 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException exception) {
             throw new ManagerLoadException("Что то пошло не так во время записи файла");
         }
+    }
 
+    private static Task taskFromString(String source) {
+        if (source == null || source.isEmpty()) {
+            return null;
+        }
+        String[] data = source.split(",");
+        String taskType = data[1];
+        String taskName = data[2];
+        String taskDescription = data[4];
+        TaskStatus status = null;
+        for (TaskStatus item : TaskStatus.values())
+            if (item.toString().equals(data[3])) {
+                status = item;
+                break;
+            }
+        if (status == null) {
+            throw new InputMismatchException("В файле содержится неверный статус задачи. Id задачи " + data[0]);
+        }
+        if (taskType.equals(TASK.toString())) {
+            Task task = new Task(taskName, status, taskDescription);
+            task.setId(Integer.parseInt(data[0]));
+            return task;
+        } else if (taskType.equals(SUBTASK.toString())) {
+            int epicId = Integer.parseInt(data[5]);
+            SubTask subTask = new SubTask(taskName, status, taskDescription, epicId);
+            subTask.setId(Integer.parseInt(data[0]));
+            return subTask;
+        } else if (taskType.equals(EPIC.toString())) {
+            Epic epic = new Epic(taskName, taskDescription, status);
+            epic.setId(Integer.parseInt(data[0]));
+            return epic;
+        } else {
+            throw new InputMismatchException("В файле содержится неверный тип задачи " + data[0]);
+        }
     }
 }

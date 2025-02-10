@@ -1,3 +1,4 @@
+import history.manager.Managers;
 import manager.FileBackedTaskManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -311,8 +312,7 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
 
     @Test
     public void loadDataFromFileSuccessTest() {
-        FileBackedTaskManager taskManager = new FileBackedTaskManager("resources/loadTest.csv");
-        taskManager.loadFromFile();
+        FileBackedTaskManager taskManager = Managers.loadFromFile("resources/loadTest.csv");
         assertEquals(1, taskManager.getTasks().size());
         assertEquals("Task1", taskManager.getTasks().get(0).getName());
         assertEquals("Description task1", taskManager.getTasks().get(0).getDescription());
@@ -334,8 +334,7 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
 
     @Test
     public void loadDataFromFileEmptyListSuccessTest() {
-        FileBackedTaskManager taskManager = new FileBackedTaskManager("resources/emptyFileForTests.csv");
-        taskManager.loadFromFile();
+        FileBackedTaskManager taskManager = Managers.loadFromFile("resources/emptyFileForTests.csv");
         assertEquals(0, taskManager.getTasks().size());
         assertEquals(0, taskManager.getEpics().size());
         assertEquals(0, taskManager.getSubTasks().size());
@@ -344,8 +343,7 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
 
     @Test
     public void loadDataFromFileEpicWithoutSubtasksSuccessTest() {
-        FileBackedTaskManager taskManager = new FileBackedTaskManager("resources/epicWithoutSubTasks.csv");
-        taskManager.loadFromFile();
+        FileBackedTaskManager taskManager = Managers.loadFromFile("resources/epicWithoutSubTasks.csv");
         assertEquals(1, taskManager.getEpics().size());
         assertEquals("Epic2", taskManager.getEpics().get(0).getName());
         assertEquals("Description epic2", taskManager.getEpics().get(0).getDescription());
@@ -356,8 +354,7 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
 
     @Test
     public void loadDataFromNotExistedFileExceptionTest() {
-        FileBackedTaskManager taskManager = new FileBackedTaskManager("resources/notExisted.csv");
-        taskManager.loadFromFile();
+        FileBackedTaskManager taskManager = Managers.loadFromFile("resources/notExisted.csv");
         assertEquals(0, taskManager.getTasks().size());
         assertEquals(0, taskManager.getEpics().size());
         assertEquals(0, taskManager.getSubTasks().size());
