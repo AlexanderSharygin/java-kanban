@@ -2,7 +2,9 @@ package task;
 
 import java.util.Objects;
 
-public class Task {
+import static task.TaskType.TASK;
+
+public class Task implements Cloneable {
     protected Integer id;
     protected String name;
     protected String description;
@@ -16,7 +18,7 @@ public class Task {
         this.description = description;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -63,6 +65,15 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{id=%d, name='%s', description='%s', status=%s}\n".formatted(id, name, description, status.getStatus());
+        return String.join(",", id.toString(), TASK.toString(), name, status.toString(), description);
+    }
+
+    @Override
+    public Task clone() {
+        try {
+            return (Task) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

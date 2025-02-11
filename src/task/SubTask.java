@@ -1,5 +1,7 @@
 package task;
 
+import static task.TaskType.SUBTASK;
+
 public class SubTask extends Task {
 
     private Integer epicId;
@@ -19,7 +21,7 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return "SubTask{id=%d, name='%s', description='%s', status=%s, epicId=%s}\n"
-                .formatted(id, name, description, status.getStatus(), epicId);
+        return String.join(",", id.toString(), SUBTASK.toString(), name, status.toString(), description,
+                String.valueOf(epicId));
     }
 }

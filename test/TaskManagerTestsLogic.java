@@ -1,6 +1,4 @@
-import manager.InMemoryTaskManager;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import manager.TaskManager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
@@ -12,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static task.TaskStatus.*;
 
 
-public class TaskManagerTests {
+public class TaskManagerTestsLogic {
 
     Epic epic;
     SubTask subTaskNew1;
@@ -25,7 +23,7 @@ public class TaskManagerTests {
     Task taskNew1;
     Task taskNew2;
 
-    public TaskManagerTests() {
+    public TaskManagerTestsLogic() {
         epic = new Epic("EpicOne", "one");
         subTaskNew1 = new SubTask("SubTaskN1", NEW, "stN1", 1);
         subTaskNew2 = new SubTask("SubTaskN2", NEW, "stN2", 1);
@@ -38,38 +36,27 @@ public class TaskManagerTests {
         taskNew2 = new Task("SecondTask", NEW, "t2");
     }
 
-    private InMemoryTaskManager taskManager;
 
-    @BeforeEach
-    public void setUp() {
-        taskManager = new InMemoryTaskManager();
-    }
-
-    @Test
-    public void epicWithoutSubtaskHasNewStatusSuccessTest() {
+    public void epicWithoutSubtaskHasNewStatusSuccessTest(TaskManager taskManager) {
         taskManager.addEpic(epic);
         assertEquals(epic.getStatus(), NEW, "Эпик без подзадач должен иметь статус новый");
     }
 
-
-    @Test
-    public void epicWithSeveralNewSubtaskHasNewStatusSuccess() {
+    public void epicWithSeveralNewSubtaskHasNewStatusSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskNew1);
         taskManager.addSubTask(subTaskNew2);
         assertEquals(epic.getStatus(), NEW, "Эпик c подзадачами в статусе new должен иметь статус новый");
     }
 
-    @Test
-    public void epicWithSeveralDoneSubtaskHasDoneStatusSuccess() {
+    public void epicWithSeveralDoneSubtaskHasDoneStatusSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
         taskManager.addSubTask(subTaskDone2);
         assertEquals(epic.getStatus(), DONE, "Эпик c подзадачами в статусе DONE должен иметь статус DONE");
     }
 
-    @Test
-    public void epicWithNewAndDoneSubtaskHasInNewStatusSuccess() {
+    public void epicWithNewAndDoneSubtaskHasInNewStatusSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
         taskManager.addSubTask(subTaskNew2);
@@ -77,9 +64,7 @@ public class TaskManagerTests {
                 "статус IN_PROGRESS");
     }
 
-
-    @Test
-    public void epicWithSeveralInProgressSubtaskHasInProgressStatusSuccess() {
+    public void epicWithSeveralInProgressSubtaskHasInProgressStatusSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
         taskManager.addSubTask(subTaskInProgress2);
@@ -88,44 +73,37 @@ public class TaskManagerTests {
                 "Эпик c подзадачами в статусе IN_PROGRESS должен иметь статус IN_PROGRESS");
     }
 
-    @Test
-    public void getTasksReturnListOfAllTasksSuccess() {
+    public void getTasksReturnListOfAllTasksSuccess(TaskManager taskManager) {
         taskManager.addTask(taskNew1);
         taskManager.addTask(taskNew2);
         assertEquals(2, taskManager.getTasks().size(), "Список задач отображается неправильно");
     }
 
-    @Test
-    public void getTasksReturnEmptyListForManagerWithoutTasksSuccess() {
+    public void getTasksReturnEmptyListForManagerWithoutTasksSuccess(TaskManager taskManager) {
         assertEquals(0, taskManager.getTasks().size(), "Список задач отображается неправильно");
     }
 
-    @Test
-    public void getEpicsReturnListOfAllEpicsSuccess() {
+    public void getEpicsReturnListOfAllEpicsSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addEpic(epic2);
         assertEquals(2, taskManager.getEpics().size(), "Список эпиков отображается неправильно");
     }
 
-    @Test
-    public void getEpicsReturnEmptyListForManagerWithoutEpicsSuccess() {
+    public void getEpicsReturnEmptyListForManagerWithoutEpicsSuccess(TaskManager taskManager) {
         assertEquals(0, taskManager.getEpics().size(), "Список эпиков отображается неправильно");
     }
 
-    @Test
-    public void getSubTasksReturnListOfAllSubTasksSuccess() {
+    public void getSubTasksReturnListOfAllSubTasksSuccess(TaskManager taskManager) {
         taskManager.addSubTask(subTaskInProgress1);
         taskManager.addSubTask(subTaskInProgress2);
         assertEquals(2, taskManager.getSubTasks().size(), "Список подзадач отображается неправильно");
     }
 
-    @Test
-    public void getSubtasksReturnEmptyListForManagerWithoutSubtasksSuccess() {
+    public void getSubtasksReturnEmptyListForManagerWithoutSubtasksSuccess(TaskManager taskManager) {
         assertEquals(0, taskManager.getSubTasks().size(), "Список подзадач отображается неправильно");
     }
 
-    @Test
-    public void removeAllTasksSuccess() {
+    public void removeAllTasksSuccess(TaskManager taskManager) {
         taskManager.addTask(taskNew1);
         taskManager.addTask(taskNew2);
         taskManager.removeAllTasks();
@@ -133,8 +111,7 @@ public class TaskManagerTests {
                 "Список задач отображается неправильно после работы метода removeAllTasks");
     }
 
-    @Test
-    public void removeAllSubTasksSuccess() {
+    public void removeAllSubTasksSuccess(TaskManager taskManager) {
         taskManager.addSubTask(subTaskInProgress1);
         taskManager.addSubTask(subTaskInProgress2);
         taskManager.removeAllSubTasks();
@@ -142,8 +119,7 @@ public class TaskManagerTests {
                 "Список задач отображается неправильно после работы метода removeAllSubTasks");
     }
 
-    @Test
-    public void removeAllEpicsSuccess() {
+    public void removeAllEpicsSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addEpic(epic2);
         taskManager.removeAllEpics();
@@ -151,78 +127,65 @@ public class TaskManagerTests {
                 "Список задач отображается неправильно после работы метода removeAllEpics");
     }
 
-    @Test
-    public void getTaskByIdCorrectIdReturnTaskSuccess() {
+    public void getTaskByIdCorrectIdReturnTaskSuccess(TaskManager taskManager) {
         taskManager.addTask(taskNew1);
         assertEquals("FirstTask", taskManager.getTaskById(1).getName(), "Возвращена неверная задача");
     }
 
-    @Test
-    public void getTaskByIdWrongIdReturnNull() {
+    public void getTaskByIdWrongIdReturnNull(TaskManager taskManager) {
         assertThrows(NoSuchElementException.class, () -> taskManager.getTaskById(101));
     }
 
-    @Test
-    public void getEpicByIdCorrectIdReturnEpicSuccess() {
+    public void getEpicByIdCorrectIdReturnEpicSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         assertEquals("EpicOne", taskManager.getEpicById(1).getName(), "Возвращена неверный эпик");
     }
 
-    @Test
-    public void getEpicByIdWrongIdReturnNull() {
+    public void getEpicByIdWrongIdReturnNull(TaskManager taskManager) {
         assertThrows(NoSuchElementException.class, () -> taskManager.getEpicById(101));
     }
 
-    @Test
-    public void getSubtaskByIdCorrectIdReturnSubtaskSuccess() {
+    public void getSubtaskByIdCorrectIdReturnSubtaskSuccess(TaskManager taskManager) {
         taskManager.addSubTask(subTaskInProgress1);
         assertEquals("SubTaskIP1", taskManager.getSubTaskById(1).getName(),
                 "Имя задачи отображается неверно");
     }
 
-    @Test
-    public void getSubtaskByIdWrongIdReturnNull() {
+    public void getSubtaskByIdWrongIdReturnNull(TaskManager taskManager) {
         assertThrows(NoSuchElementException.class, () -> taskManager.getTaskById(101));
     }
 
-    @Test
-    public void addTaskWithCorrectTaskAdded() {
+    public void addTaskWithCorrectTaskAdded(TaskManager taskManager) {
         taskManager.addTask(taskNew1);
         assertEquals(1, taskManager.getTasks().size(), "Задача не добавлена");
     }
 
-    @Test
-    public void addNullTaskNotAdded() {
+    public void addNullTaskNotAdded(TaskManager taskManager) {
         taskManager.addTask(null);
         assertEquals(0, taskManager.getTasks().size(), "Задача null добавлена");
     }
 
-    @Test
-    public void addEpicWithCorrectEpicAdded() {
+    public void addEpicWithCorrectEpicAdded(TaskManager taskManager) {
         taskManager.addEpic(epic);
         assertEquals(1, taskManager.getEpics().size(), "Эпик не добавлен");
     }
 
-    @Test
-    public void addNullEpicNotAdded() {
+    public void addNullEpicNotAdded(TaskManager taskManager) {
         taskManager.addEpic(null);
         assertEquals(0, taskManager.getEpics().size(), "Эпик null не добавлен");
     }
 
-    @Test
-    public void addSubtaskWithCorrectSubtaskAdded() {
+    public void addSubtaskWithCorrectSubtaskAdded(TaskManager taskManager) {
         taskManager.addSubTask(subTaskInProgress1);
         assertEquals(1, taskManager.getSubTasks().size(), "Подзадача не добавлена");
     }
 
-    @Test
-    public void addNullSubtaskNotAdded() {
+    public void addNullSubtaskNotAdded(TaskManager taskManager) {
         taskManager.addSubTask(null);
         assertEquals(0, taskManager.getSubTasks().size(), "Подзадача null добавлена");
     }
 
-    @Test
-    public void updateTaskWithCorrectDataSuccess() {
+    public void updateTaskWithCorrectDataSuccess(TaskManager taskManager) {
         taskManager.addTask(taskNew1);
         Task task2 = new Task("Updated", DONE, "upd");
         task2.setId(1);
@@ -232,16 +195,14 @@ public class TaskManagerTests {
         assertEquals(DONE, taskManager.getTaskById(1).getStatus(), "Статус задачи отображается неверно");
     }
 
-    @Test
-    public void updateTaskByTaskWithWrongIdNoSuchElementException() {
+    public void updateTaskByTaskWithWrongIdNoSuchElementException(TaskManager taskManager) {
         taskManager.addTask(taskNew1);
         Task task2 = new Task("Updated", DONE, "upd");
         task2.setId(2);
         assertThrows(NoSuchElementException.class, () -> taskManager.updateTask(task2));
     }
 
-    @Test
-    public void updateSubTaskWithCorrectDataSuccess() {
+    public void updateSubTaskWithCorrectDataSuccess(TaskManager taskManager) {
         Epic epic = new Epic("upd", "upd");
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
@@ -253,16 +214,14 @@ public class TaskManagerTests {
         assertEquals(NEW, taskManager.getSubTaskById(2).getStatus(), "Статус подзадачи отображается неверно");
     }
 
-    @Test
-    public void updateSubTaskByTaskWithWrongIdNoSuchElementException() {
+    public void updateSubTaskByTaskWithWrongIdNoSuchElementException(TaskManager taskManager) {
         taskManager.addSubTask(subTaskInProgress1);
         SubTask subTask2 = new SubTask("upd", NEW, "upd", 1);
         subTask2.setId(2);
         assertThrows(NoSuchElementException.class, () -> taskManager.updateSubtask(subTask2));
     }
 
-    @Test
-    public void updateEpicWithCorrectDataSuccess() {
+    public void updateEpicWithCorrectDataSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         Epic epic2 = new Epic("upd", "upd");
         epic2.setId(1);
@@ -272,73 +231,61 @@ public class TaskManagerTests {
         assertEquals(NEW, taskManager.getEpicById(1).getStatus(), "Статус эпика отображается неверно");
     }
 
-    @Test
-    public void updateEpicByTaskWithWrongIdNoSuchElementException() {
+    public void updateEpicByTaskWithWrongIdNoSuchElementException(TaskManager taskManager) {
         taskManager.addEpic(epic);
         Epic epic2 = new Epic("upd", "upd");
         epic2.setId(2);
         assertThrows(NoSuchElementException.class, () -> taskManager.updateEpic(epic2));
     }
 
-    @Test
-    public void removeTaskCorrectIdSuccess() {
+    public void removeTaskCorrectIdSuccess(TaskManager taskManager) {
         taskManager.addTask(taskNew1);
         taskManager.removeTaskById(1);
         assertEquals(0, taskManager.getTasks().size(), "Задача не удалена");
     }
 
-    @Test
-    public void removeTaskWrongIdNoSuchElementException() {
+    public void removeTaskWrongIdNoSuchElementException(TaskManager taskManager) {
         assertThrows(NoSuchElementException.class, () -> taskManager.removeTaskById(1));
     }
 
-    @Test
-    public void removeSubTaskCorrectIdSuccess() {
+    public void removeSubTaskCorrectIdSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
         taskManager.removeSubTaskById(2);
         assertEquals(0, taskManager.getSubTasks().size(), "Подзадача не удалена");
     }
 
-    @Test
-    public void removeSubTaskWrongIdNoSuchElementException() {
+    public void removeSubTaskWrongIdNoSuchElementException(TaskManager taskManager) {
         assertThrows(NoSuchElementException.class, () -> taskManager.removeSubTaskById(1));
     }
 
-    @Test
-    public void removeEpicCorrectIdSuccess() {
+    public void removeEpicCorrectIdSuccess(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.removeEpicById(1);
         assertEquals(0, taskManager.getEpics().size(), "Эпик не удален");
     }
 
-    @Test
-    public void removeEpicWrongIdNoSuchElementException() {
+    public void removeEpicWrongIdNoSuchElementException(TaskManager taskManager) {
         assertThrows(NoSuchElementException.class, () -> taskManager.removeEpicById(1));
     }
 
-    @Test
-    public void getEpicsSubtasksEpicWithoutSubtasksEmptyList() {
+    public void getEpicsSubtasksEpicWithoutSubtasksEmptyList(TaskManager taskManager) {
         taskManager.addEpic(epic);
         assertEquals(0, taskManager.getSubTasksByEpicId(1).size(), "Список подзадач не пуст");
     }
 
-    @Test
-    public void getEpicsSubtasksEpicWithSubtasksSubtasksList() {
+    public void getEpicsSubtasksEpicWithSubtasksSubtasksList(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskNew1);
         taskManager.addSubTask(subTaskNew2);
         assertEquals(2, taskManager.getSubTasksByEpicId(1).size(), "Список подзадач пуст");
     }
 
-
-    @Test
-    public void getEpicsSubtasksWrongEpicIdNoSuchElementException() {
+    public void getEpicsSubtasksWrongEpicIdNoSuchElementException(TaskManager taskManager) {
         assertThrows(NoSuchElementException.class, () -> taskManager.getSubTasksByEpicId(0));
     }
 
-    @Test
-    public void epicStatusUpdateAddInProgressSubTaskToNewEpicInProgress() {
+    public void epicStatusUpdateAddInProgressSubTaskToNewEpicInProgress(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskNew1);
         assertEquals(NEW, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть NEW");
@@ -346,8 +293,7 @@ public class TaskManagerTests {
         assertEquals(IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть IN_PROGRESS");
     }
 
-    @Test
-    public void epicStatusUpdateAddDoneSubTaskToNewEpicInProgress() {
+    public void epicStatusUpdateAddDoneSubTaskToNewEpicInProgress(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskNew1);
         assertEquals(NEW, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть NEW");
@@ -355,16 +301,14 @@ public class TaskManagerTests {
         assertEquals(IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть IN_PROGRESS");
     }
 
-    @Test
-    public void epicStatusUpdateAddDoneSubTaskToInProgressEpicInProgress() {
+    public void epicStatusUpdateAddDoneSubTaskToInProgressEpicInProgress(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
         taskManager.addSubTask(subTaskInProgress2);
         assertEquals(IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть IN_PROGRESS");
     }
 
-    @Test
-    public void epicStatusUpdateAddInProgressSubTaskToDoneEpicInProgress() {
+    public void epicStatusUpdateAddInProgressSubTaskToDoneEpicInProgress(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
         assertEquals(DONE, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть DONE");
@@ -372,8 +316,7 @@ public class TaskManagerTests {
         assertEquals(IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть IN_PROGRESS");
     }
 
-    @Test
-    public void epicStatusUpdateAddNewSubTaskToDoneEpicInProgress() {
+    public void epicStatusUpdateAddNewSubTaskToDoneEpicInProgress(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
         assertEquals(DONE, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть DONE");
@@ -381,16 +324,14 @@ public class TaskManagerTests {
         assertEquals(IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть IN_PROGRESS");
     }
 
-    @Test
-    public void epicStatusUpdateAddDoneSubTaskToDoneEpicDone() {
+    public void epicStatusUpdateAddDoneSubTaskToDoneEpicDone(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
         taskManager.addSubTask(subTaskDone2);
         assertEquals(DONE, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть DONE");
     }
 
-    @Test
-    public void epicStatusUpdateNewEpicSubTaskToInProgressEpicInProgress() {
+    public void epicStatusUpdateNewEpicSubTaskToInProgressEpicInProgress(TaskManager taskManager) {
         SubTask subTask3 = new SubTask("ST2", IN_PROGRESS, "one", 1);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskNew1);
@@ -401,8 +342,7 @@ public class TaskManagerTests {
         assertEquals(IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть IN_PROGRESS");
     }
 
-    @Test
-    public void epicStatusUpdateInProgressEpicSubTaskToNewEpicInProgress() {
+    public void epicStatusUpdateInProgressEpicSubTaskToNewEpicInProgress(TaskManager taskManager) {
         SubTask subTask3 = new SubTask("ST2", NEW, "one", 1);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskNew1);
@@ -413,8 +353,7 @@ public class TaskManagerTests {
         assertEquals(NEW, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть NEW");
     }
 
-    @Test
-    public void epicStatusUpdateInProgressEpicSubTaskToDoneEpicDone() {
+    public void epicStatusUpdateInProgressEpicSubTaskToDoneEpicDone(TaskManager taskManager) {
         SubTask subTask3 = new SubTask("ST2", DONE, "one", 1);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
@@ -424,8 +363,7 @@ public class TaskManagerTests {
         assertEquals(DONE, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть DONE");
     }
 
-    @Test
-    public void epicStatusUpdateDoneEpicSubTaskToInProgressEpicInProgress() {
+    public void epicStatusUpdateDoneEpicSubTaskToInProgressEpicInProgress(TaskManager taskManager) {
         SubTask subTask3 = new SubTask("ST2", IN_PROGRESS, "one", 1);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
@@ -436,8 +374,7 @@ public class TaskManagerTests {
         assertEquals(IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть IN_PROGRESS");
     }
 
-    @Test
-    public void epicStatusRemoveDoneEpicSubTaskEpicDone() {
+    public void epicStatusRemoveDoneEpicSubTaskEpicDone(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
         taskManager.addSubTask(subTaskDone2);
@@ -445,8 +382,7 @@ public class TaskManagerTests {
         assertEquals(DONE, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть DONE");
     }
 
-    @Test
-    public void epicStatusRemoveAllEpicSubTasksEpicNew() {
+    public void epicStatusRemoveAllEpicSubTasksEpicNew(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
         taskManager.addSubTask(subTaskDone2);
@@ -455,13 +391,23 @@ public class TaskManagerTests {
         assertEquals(NEW, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быть NEW");
     }
 
-    @Test
-    public void epicStatusRemoveInProgressEpicSubTasksEpicNew() {
+    public void epicStatusRemoveInProgressEpicSubTasksEpicNew(TaskManager taskManager) {
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskNew1);
         taskManager.addSubTask(subTaskInProgress2);
         assertEquals(IN_PROGRESS, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быт IN_PROGRESS");
         taskManager.removeSubTaskById(3);
         assertEquals(NEW, taskManager.getEpicById(1).getStatus(), "Статус эпика должен быт NEW");
+    }
+
+    public void epicNotContainsRemovedSubTasks(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        taskManager.addSubTask(subTaskNew1);
+        taskManager.addSubTask(subTaskInProgress2);
+        taskManager.removeSubTaskById(2);
+        assertEquals(1, taskManager.getEpicById(1).getSubtasksId().size(),
+                "Количество подзадач в эпике больше ожидаемого" );
+        assertEquals(3, taskManager.getEpicById(1).getSubtasksId().get(0),
+                "Id подзадачи не верен");
     }
 }
