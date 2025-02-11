@@ -1,4 +1,3 @@
-import history.manager.Managers;
 import manager.FileBackedTaskManager;
 import task.Epic;
 import task.SubTask;
@@ -6,11 +5,14 @@ import task.Task;
 import task.TaskStatus;
 import utils.CsvEditor;
 
+import java.io.File;
+
 public class Main {
 
     public static void main(String[] args) {
         String filePath = "resources/tasks.csv";
-        FileBackedTaskManager taskManager = Managers.loadFromFile(filePath);
+        File file = new File(filePath);
+        FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile(file);
         Task task1 = new Task("Task 1", TaskStatus.NEW, "Task 1");
         Task task2 = new Task("Task 2", TaskStatus.IN_PROGRESS, "Task 2");
         Epic epic1 = new Epic("Epic 1", "Epic 1");

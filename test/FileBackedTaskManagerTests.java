@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import task.TaskStatus;
 import utils.CsvEditor;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -23,7 +24,8 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
     @BeforeEach
     public void setUp() {
         CsvEditor.clearFile("resources/emptyFileForTests.csv");
-        taskManager = new FileBackedTaskManager("resources/emptyFileForTests.csv");
+        File file = new File("resources/emptyFileForTests.csv");
+         taskManager = FileBackedTaskManager.loadFromFile(file);
     }
 
     @AfterEach
@@ -312,7 +314,8 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
 
     @Test
     public void loadDataFromFileSuccessTest() {
-        FileBackedTaskManager taskManager = Managers.loadFromFile("resources/loadTest.csv");
+        FileBackedTaskManager taskManager = FileBackedTaskManager
+                .loadFromFile(new File("resources/loadTest.csv"));
         assertEquals(1, taskManager.getTasks().size());
         assertEquals("Task1", taskManager.getTasks().get(0).getName());
         assertEquals("Description task1", taskManager.getTasks().get(0).getDescription());
@@ -334,7 +337,8 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
 
     @Test
     public void loadDataFromFileEmptyListSuccessTest() {
-        FileBackedTaskManager taskManager = Managers.loadFromFile("resources/emptyFileForTests.csv");
+        FileBackedTaskManager taskManager =FileBackedTaskManager
+                .loadFromFile(new File("resources/emptyFileForTests.csv"));
         assertEquals(0, taskManager.getTasks().size());
         assertEquals(0, taskManager.getEpics().size());
         assertEquals(0, taskManager.getSubTasks().size());
@@ -343,7 +347,8 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
 
     @Test
     public void loadDataFromFileEpicWithoutSubtasksSuccessTest() {
-        FileBackedTaskManager taskManager = Managers.loadFromFile("resources/epicWithoutSubTasks.csv");
+        FileBackedTaskManager taskManager = FileBackedTaskManager
+                .loadFromFile(new File("resources/epicWithoutSubTasks.csv"));
         assertEquals(1, taskManager.getEpics().size());
         assertEquals("Epic2", taskManager.getEpics().get(0).getName());
         assertEquals("Description epic2", taskManager.getEpics().get(0).getDescription());
@@ -354,7 +359,8 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
 
     @Test
     public void loadDataFromNotExistedFileExceptionTest() {
-        FileBackedTaskManager taskManager = Managers.loadFromFile("resources/notExisted.csv");
+        FileBackedTaskManager taskManager = FileBackedTaskManager
+                .loadFromFile(new File("resources/notExisted.csv"));
         assertEquals(0, taskManager.getTasks().size());
         assertEquals(0, taskManager.getEpics().size());
         assertEquals(0, taskManager.getSubTasks().size());

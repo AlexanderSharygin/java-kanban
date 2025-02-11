@@ -33,7 +33,32 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 throw new CreateFileException("Невозможно создать новый файл");
             }
         }
-        loadFromFile();
+    }
+
+    public static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file.getPath());
+        try (Reader fileReader = new FileReader(file.getAbsolutePath(), StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+            while (bufferedReader.ready()) {
+                String taskString = bufferedReader.readLine();
+                if (taskString.startsWith("id")) {
+                    continue;
+                }
+                Task task = taskFromString(taskString);
+                if (task != null) {
+                    if (task instanceof SubTask) {
+                        fileBackedTaskManager.addSubTaskFromLoader((SubTask) task);
+                    } else if (task instanceof Epic) {
+                        fileBackedTaskManager.addEpicFromLoader((Epic) task);
+                    } else {
+                        fileBackedTaskManager.addTaskFromLoader(task);
+                    }
+                }
+            }
+        } catch (IOException exception) {
+            throw new ManagerSaveException("Что то пошло не так во время чтения файла");
+        }
+        return fileBackedTaskManager;
     }
 
     @Override
@@ -154,31 +179,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void removeEpicById(Integer id) {
         super.removeEpicById(id);
         save();
-    }
-
-    private void loadFromFile() {
-        File file = new File(filePath);
-        try (Reader fileReader = new FileReader(file.getAbsolutePath(), StandardCharsets.UTF_8);
-             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
-            while (bufferedReader.ready()) {
-                String taskString = bufferedReader.readLine();
-                if (taskString.startsWith("id")) {
-                    continue;
-                }
-                Task task = taskFromString(taskString);
-                if (task != null) {
-                    if (task instanceof SubTask) {
-                        addSubTaskFromLoader((SubTask) task);
-                    } else if (task instanceof Epic) {
-                        addEpicFromLoader((Epic) task);
-                    } else {
-                        addTaskFromLoader(task);
-                    }
-                }
-            }
-        } catch (IOException exception) {
-            throw new ManagerSaveException("Что то пошло не так во время чтения файла");
-        }
     }
 
     private void save() {
