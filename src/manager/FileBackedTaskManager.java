@@ -13,13 +13,18 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.InputMismatchException;
 import java.util.List;
 
 import static task.TaskType.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private final List<String> headerColumns = List.of("id", "type", "name", "status", "description", "epic");
+    private final List<String> headerColumns = List.of("id", "type", "name", "status", "description", "startDateTime",
+            "Duration", "epic");
     private final String filePath;
 
     public FileBackedTaskManager(String filePath) {
@@ -212,6 +217,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String taskType = data[1];
         String taskName = data[2];
         String taskDescription = data[4];
+        LocalDateTime dateTime = LocalDateTime.parse(data[5], DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        int duration = Integer.parseInt(data[6]);
         TaskStatus status = null;
         for (TaskStatus item : TaskStatus.values())
             if (item.toString().equals(data[3])) {
@@ -222,12 +229,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new InputMismatchException("В файле содержится неверный статус задачи. Id задачи " + data[0]);
         }
         if (taskType.equals(TASK.toString())) {
-            Task task = new Task(taskName, status, taskDescription);
+            Task task = new Task(taskName, status, taskDescription, duration,
+                    ZonedDateTime.ofInstant(dateTime.toInstant(ZoneOffset.UTC), ZoneOffset.UTC));
             task.setId(Integer.parseInt(data[0]));
             return task;
         } else if (taskType.equals(SUBTASK.toString())) {
             int epicId = Integer.parseInt(data[5]);
-            SubTask subTask = new SubTask(taskName, status, taskDescription, epicId);
+            SubTask subTask = new SubTask(taskName, status, taskDescription, duration,
+                    ZonedDateTime.ofInstant(dateTime.toInstant(ZoneOffset.UTC), ZoneOffset.UTC), epicId);
             subTask.setId(Integer.parseInt(data[0]));
             return subTask;
         } else if (taskType.equals(EPIC.toString())) {
