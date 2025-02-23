@@ -184,7 +184,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeAllSubTasks() {
         if (!subTasks.isEmpty()) {
             subTasks.keySet().forEach(historyManager::remove);
-            epics.forEach((_, value) -> {
+            epics.forEach((key, value) -> {
                 value.clearSubtasksId();
                 value.setDuration(Duration.ZERO);
                 value.setStartTime(LocalDateTime.MAX);
