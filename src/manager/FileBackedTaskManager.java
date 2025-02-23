@@ -217,8 +217,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String taskType = data[1];
         String taskName = data[2];
         String taskDescription = data[4];
-        LocalDateTime dateTime = LocalDateTime.parse(data[5], DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        int duration = Integer.parseInt(data[6]);
+        LocalDateTime dateTime = LocalDateTime.MIN;
+        int duration = 0;
+        if (!taskType.equals(EPIC.toString())) {
+            dateTime = LocalDateTime.parse(data[5], DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            duration = Integer.parseInt(data[6]);
+        }
         TaskStatus status = null;
         for (TaskStatus item : TaskStatus.values())
             if (item.toString().equals(data[3])) {
@@ -234,7 +238,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             task.setId(Integer.parseInt(data[0]));
             return task;
         } else if (taskType.equals(SUBTASK.toString())) {
-            int epicId = Integer.parseInt(data[5]);
+            int epicId = Integer.parseInt(data[7]);
             SubTask subTask = new SubTask(taskName, status, taskDescription, duration,
                     ZonedDateTime.ofInstant(dateTime.toInstant(ZoneOffset.UTC), ZoneOffset.UTC), epicId);
             subTask.setId(Integer.parseInt(data[0]));

@@ -289,4 +289,145 @@ public class InMemoryTaskManagerTests extends TaskManagerTestsLogic {
     public void epicNotContainsRemovedSubTasks() {
         super.epicNotContainsRemovedSubTasks(taskManager);
     }
+
+    @Test
+    public void getPrioritizedTasksWithTaskPrioritizedListReturned() {
+        super.getPrioritizedTasksWithTaskPrioritizedListReturned(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTwoTaskWithTHeSameStartAndEndTimeTrue() {
+        super.isTaskIntersectTwoTaskWithTHeSameStartAndEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTwoSubTaskWithTHeSameStartAndEndTimeTrue() {
+        super.isTaskIntersectTwoSubTaskWithTHeSameStartAndEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTaskAndSubTaskWithTHeSameStartAndEndTimeTrue() {
+        super.isTaskIntersectTaskAndSubTaskWithTHeSameStartAndEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTwoTasksWithTheSameStartAndLateEndTimeTrue() {
+        super.isTaskIntersectTwoTasksWithTheSameStartAndLateEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSubTasksWithTheSameStartAndLateEndTimeTrue() {
+        super.isTaskIntersectSubTasksWithTheSameStartAndLateEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTaskAndSubTaskWithTheSameStartAndLateEndTimeTrue() {
+        super.isTaskIntersectTaskAndSubTaskWithTheSameStartAndLateEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTwoTasksWithDiffStartAndLateEndTimeTrue() {
+        super.isTaskIntersectTwoTasksWithDiffStartAndLateEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSubTasksWithDiffStartAndLateEndTimeTrue() {
+        super.isTaskIntersectSubTasksWithDiffStartAndLateEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTaskAndSubTaskWithDiffStartAndLateEndTimeTrue() {
+        super.isTaskIntersectTaskAndSubTaskWithDiffStartAndLateEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondTaskStartTimeEqualFirstTaskStartTimeEndTimeTrue() {
+        super.isTaskIntersectSecondTaskStartTimeEqualFirstTaskEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondSubTaskStartTimeEqualFirstSubTaskStartTimeEndTimeTrue() {
+        super.isTaskIntersectSecondSubTaskStartTimeEqualFirstSubTaskEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondSubTaskStartTimeEqualFirstTaskStartTimeEndTimeTrue() {
+        super.isTaskIntersectSecondSubTaskStartTimeEqualFirstTaskEndTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTwoTaskWithSameEndTimeSecondTaskPastStartTimeTrue() {
+        super.isTaskIntersectTwoTaskWithSameEndTimeSecondTaskPastStartTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTwoSubTaskWithSameEndTimeSecondSubTaskPastStartTimeTrue() {
+        super.isTaskIntersectTwoSubTaskWithSameEndTimeSecondSubTaskPastStartTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSubTaskTaskWithSameEndTimeSubTaskPastStartTimeTrue() {
+        super.isTaskIntersectSubTaskTaskWithSameEndTimeSubTaskPastStartTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTwoTaskWithDiffEndTimeSecondTaskPastStartTimeTrue() {
+        super.isTaskIntersectTwoTaskWithDiffEndTimeSecondTaskPastStartTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectTwoSubTaskWithDiffEndTimeSecondSubTaskPastStartTimeTrue() {
+        super.isTaskIntersectTwoSubTaskWithDiffEndTimeSecondSubTaskPastStartTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSubTaskTaskWithDiffEndTimeSubTaskPastStartTimeTrue() {
+        super.isTaskIntersectSubTaskTaskWithDiffEndTimeSubTaskPastStartTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondTaskEndTimeEqualFirstTaskStartTimeTrue() {
+        super.isTaskIntersectSecondTaskEndTimeEqualFirstTaskStartTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondSubTaskEndTimeEqualFirstSubTaskStartTimeTrue() {
+        super.isTaskIntersectSecondSubTaskEndTimeEqualFirstSubTaskStartTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondSubTaskEndTimeEqualFirstTaskStartTimeTrue() {
+        super.isTaskIntersectSecondSubTaskEndTimeEqualFirstTaskStartTimeTrue(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondTaskEarlyFirstTaskFalse() {
+        super.isTaskIntersectSecondTaskEarlyFirstTaskFalse(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondSubTaskEarlyFirstSubTaskFalse() {
+        super.isTaskIntersectSecondSubTaskEarlyFirstSubTaskFalse(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondSubTaskEarlyFirstTaskFalse() {
+        super.isTaskIntersectSecondSubTaskEarlyFirstTaskFalse(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondTaskAfterFirstTaskFalse() {
+        super.isTaskIntersectSecondTaskAfterFirstTaskFalse(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondSubTaskAfterFirstSubTaskFalse() {
+        super.isTaskIntersectSecondSubTaskAfterFirstSubTaskFalse(taskManager);
+    }
+
+    @Test
+    public void isTaskIntersectSecondSubTaskAfterFirstTaskFalse() {
+        super.isTaskIntersectSecondSubTaskAfterFirstTaskFalse(taskManager);
+    }
+
 }

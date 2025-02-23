@@ -6,6 +6,7 @@ import task.Epic;
 import task.SubTask;
 import task.Task;
 
+import static java.time.ZonedDateTime.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static task.TaskStatus.IN_PROGRESS;
 import static task.TaskStatus.NEW;
@@ -27,7 +28,9 @@ public class HistoryManagerTests {
 
     @Test
     public void addTaskToHistoryManagerSuccess() {
-        Task task1 = new Task("T1", NEW, "one");
+        Task task1 = new Task("T1", NEW, "one", 10,
+                parse("2025-02-23T17:55:00.049300100+01:00[Europe/London]"));
+
         taskManager.addTask(task1);
         taskManager.getTaskById(1);
         assertEquals(1, taskManager.getHistory().size(), "Задача не добавлена в историю");
@@ -51,7 +54,9 @@ public class HistoryManagerTests {
     public void addSubTaskToHistoryManagerSuccess() {
         Epic epic1 = new Epic("EpicOne", "one");
         taskManager.addEpic(epic1);
-        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 1);
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 20,
+                parse("2025-02-23T17:25:00.049300100+01:00[Europe/London]"), 1);
+
         taskManager.addSubTask(subTask2);
         taskManager.getSubTaskById(2);
         assertEquals(1, taskManager.getHistory().size(), "Эпик не добавлена в историю");
@@ -62,7 +67,8 @@ public class HistoryManagerTests {
 
     @Test
     public void getSameTaskSeveralTimesCorrectHistory() {
-        Task task1 = new Task("T1", NEW, "one");
+        Task task1 = new Task("T1", NEW, "one", 10,
+                parse("2025-02-23T17:55:00.049300100+01:00[Europe/London]"));
         taskManager.addTask(task1);
         taskManager.getTaskById(1);
         taskManager.getTaskById(1);
@@ -72,7 +78,8 @@ public class HistoryManagerTests {
 
     @Test
     public void getSameTaskSeveralTimesWithDifferentDataCorrectHistory() {
-        Task task1 = new Task("T1", NEW, "one");
+        Task task1 = new Task("T1", NEW, "one", 10,
+                parse("2025-02-22T17:55:00.049300100+01:00[Europe/London]"));
         taskManager.addTask(task1);
         taskManager.getTaskById(1);
         task1.setId(1);
@@ -91,7 +98,8 @@ public class HistoryManagerTests {
     public void getSameSubTaskSeveralTimesCorrectHistory() {
         Epic epic1 = new Epic("EpicOne", "one");
         taskManager.addEpic(epic1);
-        SubTask subTask1 = new SubTask("Subtask", IN_PROGRESS, "one", 1);
+        SubTask subTask1 = new SubTask("ST1", IN_PROGRESS, "one", 10,
+                parse("2025-02-23T17:05:00.049300100+01:00[Europe/London]"), 1);
         taskManager.addSubTask(subTask1);
         taskManager.getSubTaskById(2);
         taskManager.getSubTaskById(2);
@@ -103,7 +111,8 @@ public class HistoryManagerTests {
     public void getSameSubTaskSeveralTimesWithDifferentDataCorrectHistory() {
         Epic epic1 = new Epic("Epic1", "1");
         Epic epic2 = new Epic("Epic2", "2");
-        SubTask subtask = new SubTask("T1", NEW, "one", 1);
+        SubTask subtask = new SubTask("ST1", NEW, "one", 10,
+                parse("2025-02-20T17:05:00.049300100+01:00[Europe/London]"), 1);
         taskManager.addEpic(epic1);
         taskManager.addEpic(epic2);
         taskManager.addSubTask(subtask);
@@ -150,8 +159,11 @@ public class HistoryManagerTests {
 
     @Test
     public void severalItemsHistoryManagerReturnCorrectHistory() {
-        Task task1 = new Task("Task", NEW, "one");
-        SubTask subTask1 = new SubTask("Subtask", NEW, "one", 1);
+        SubTask subTask1 = new SubTask("ST1", NEW, "one", 10,
+                parse("2025-02-23T17:04:00.049300100+01:00[Europe/London]"), 1);
+        Task task1 = new Task("T1", NEW, "one", 10,
+                parse("2025-02-23T17:55:00.049300100+01:00[Europe/London]"));
+
         Epic epic1 = new Epic("Epic", "one");
         taskManager.addEpic(epic1);
         taskManager.addTask(task1);
@@ -175,9 +187,13 @@ public class HistoryManagerTests {
 
     @Test
     public void removedTaskNotExistInHistoryTaskInMiddleOfHistory() {
-        Task task1 = new Task("T1", NEW, "one");
-        Task task2 = new Task("T2", NEW, "two");
-        Task task3 = new Task("T3", NEW, "three");
+        Task task1 = new Task("T1", NEW, "one", 9,
+                parse("2025-02-23T17:01:00.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", NEW, "two", 9,
+                parse("2025-02-23T17:11:00.049300100+01:00[Europe/London]"));
+        Task task3 = new Task("T3", NEW, "three", 9,
+                parse("2025-02-23T17:22:00.049300100+01:00[Europe/London]"));
+
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addTask(task3);
@@ -192,9 +208,12 @@ public class HistoryManagerTests {
 
     @Test
     public void removedTaskNotExistInHistoryTaskAtEndOfHistory() {
-        Task task1 = new Task("T1", NEW, "one");
-        Task task2 = new Task("T2", NEW, "two");
-        Task task3 = new Task("T3", NEW, "three");
+        Task task1 = new Task("T1", NEW, "one", 9,
+                parse("2025-02-23T17:01:00.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", NEW, "two", 9,
+                parse("2025-02-23T17:11:00.049300100+01:00[Europe/London]"));
+        Task task3 = new Task("T3", NEW, "three", 9,
+                parse("2025-02-23T17:22:00.049300100+01:00[Europe/London]"));
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addTask(task3);
@@ -209,9 +228,12 @@ public class HistoryManagerTests {
 
     @Test
     public void removedTaskNotExistInHistoryTaskAtStartOfHistory() {
-        Task task1 = new Task("T1", NEW, "one");
-        Task task2 = new Task("T2", NEW, "two");
-        Task task3 = new Task("T3", NEW, "three");
+        Task task1 = new Task("T1", NEW, "one", 9,
+                parse("2025-02-23T17:01:00.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", NEW, "two", 9,
+                parse("2025-02-23T17:11:00.049300100+01:00[Europe/London]"));
+        Task task3 = new Task("T3", NEW, "three", 9,
+                parse("2025-02-23T17:22:00.049300100+01:00[Europe/London]"));
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addTask(task3);
@@ -226,10 +248,13 @@ public class HistoryManagerTests {
 
     @Test
     public void removedSubTaskNotExistInHistory() {
-        Epic epic = new Epic("T1", "one");
-        SubTask st1 = new SubTask("T1", NEW, "one", 1);
-        SubTask st2 = new SubTask("T2", NEW, "two", 1);
-        Task task1 = new Task("T1", NEW, "one");
+        Epic epic = new Epic("E1", "one");
+        SubTask st1 = new SubTask("ST1", NEW, "one", 10,
+                parse("2025-02-23T17:05:00.049300100+01:00[Europe/London]"), 1);
+        SubTask st2 = new SubTask("ST2", NEW, "two", 20,
+                parse("2025-02-23T17:25:00.049300100+01:00[Europe/London]"), 1);
+        Task task1 = new Task("T1", NEW, "one", 10,
+                parse("2025-02-23T17:55:00.049300100+01:00[Europe/London]"));
         taskManager.addEpic(epic);
         taskManager.addSubTask(st1);
         taskManager.addSubTask(st2);
@@ -248,9 +273,12 @@ public class HistoryManagerTests {
 
     @Test
     public void updatedTaskNotUpdatedInHistoryAndCorrectlyRemoved() {
-        Task task1 = new Task("T1", NEW, "one");
-        Task task2 = new Task("T2", NEW, "two");
-        Task task3 = new Task("T3", NEW, "three");
+        Task task1 = new Task("T1", NEW, "one", 9,
+                parse("2025-02-23T17:01:00.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", NEW, "two", 9,
+                parse("2025-02-23T17:11:00.049300100+01:00[Europe/London]"));
+        Task task3 = new Task("T3", NEW, "three", 9,
+                parse("2025-02-23T17:22:00.049300100+01:00[Europe/London]"));
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addTask(task3);
@@ -297,9 +325,12 @@ public class HistoryManagerTests {
 
     @Test
     public void updatedTaskNotUpdatedInHistoryAndCorrectlyUpdatedAfterGet() {
-        Task task1 = new Task("T1", NEW, "one");
-        Task task2 = new Task("T2", NEW, "two");
-        Task task3 = new Task("T3", NEW, "three");
+        Task task1 = new Task("T1", NEW, "one", 9,
+                parse("2025-02-23T17:01:00.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", NEW, "two", 9,
+                parse("2025-02-23T17:11:00.049300100+01:00[Europe/London]"));
+        Task task3 = new Task("T3", NEW, "three", 9,
+                parse("2025-02-23T17:22:00.049300100+01:00[Europe/London]"));
         taskManager.addTask(task1);
         taskManager.addTask(task2);
         taskManager.addTask(task3);
@@ -357,9 +388,12 @@ public class HistoryManagerTests {
     @Test
     public void updatedSubTaskNotUpdatedInHistoryAndCorrectlyRemoved() {
         Epic epic = new Epic("E1", "one");
-        SubTask st1 = new SubTask("ST1", NEW, "one", 1);
-        SubTask st2 = new SubTask("ST2", NEW, "two", 1);
-        Task task1 = new Task("T1", NEW, "one");
+        SubTask st1 = new SubTask("ST1", NEW, "one", 10,
+                parse("2025-02-22T17:05:00.049300100+01:00[Europe/London]"), 1);
+        SubTask st2 = new SubTask("ST2", NEW, "two", 20,
+                parse("2025-02-22T17:26:00.049300100+01:00[Europe/London]"), 1);
+        Task task1 = new Task("T1", NEW, "one", 10,
+                parse("2025-02-22T17:55:00.049300100+01:00[Europe/London]"));
         taskManager.addEpic(epic);
         taskManager.addSubTask(st1);
         taskManager.addSubTask(st2);
@@ -429,9 +463,13 @@ public class HistoryManagerTests {
     @Test
     public void updatedSubTaskNotUpdatedInHistoryAndCorrectlyUpdatedAfterGet() {
         Epic epic = new Epic("E1", "one");
-        SubTask st1 = new SubTask("ST1", NEW, "one", 1);
-        SubTask st2 = new SubTask("ST2", NEW, "two", 1);
-        Task task1 = new Task("T1", NEW, "one");
+        SubTask st1 = new SubTask("ST1", NEW, "one", 10,
+                parse("2025-02-21T17:01:00.049300100+01:00[Europe/London]"), 1);
+        SubTask st2 = new SubTask("ST2", NEW, "two", 20,
+                parse("2025-02-21T17:25:00.049300100+01:00[Europe/London]"), 1);
+        Task task1 = new Task("T1", NEW, "one", 10,
+                parse("2025-02-21T17:55:00.049300100+01:00[Europe/London]"));
+
         taskManager.addEpic(epic);
         taskManager.addSubTask(st1);
         taskManager.addSubTask(st2);
@@ -554,10 +592,14 @@ public class HistoryManagerTests {
 
     @Test
     public void removedEpicNotExistInHistory() {
-        Epic epic = new Epic("T1", "one");
-        SubTask st1 = new SubTask("T1", NEW, "one", 1);
-        SubTask st2 = new SubTask("T2", NEW, "two", 1);
-        Task task1 = new Task("T1", NEW, "one");
+        Epic epic = new Epic("E1", "one");
+        SubTask st1 = new SubTask("ST1", NEW, "one", 10,
+                parse("2025-02-23T17:05:00.049300100+01:00[Europe/London]"), 1);
+        SubTask st2 = new SubTask("ST2", NEW, "two", 20,
+                parse("2025-02-23T17:25:00.049300100+01:00[Europe/London]"), 1);
+        Task task1 = new Task("T1", NEW, "one", 10,
+                parse("2025-02-23T17:55:00.049300100+01:00[Europe/London]"));
+
         taskManager.addEpic(epic);
         taskManager.addSubTask(st1);
         taskManager.addSubTask(st2);

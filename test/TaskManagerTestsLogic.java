@@ -1,10 +1,14 @@
+import exception.TaskIsIntersectingException;
 import manager.TaskManager;
 import task.Epic;
 import task.SubTask;
 import task.Task;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.NoSuchElementException;
 
+import static java.time.ZonedDateTime.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static task.TaskStatus.*;
@@ -25,15 +29,23 @@ public class TaskManagerTestsLogic {
 
     public TaskManagerTestsLogic() {
         epic = new Epic("EpicOne", "one");
-        subTaskNew1 = new SubTask("SubTaskN1", NEW, "stN1", 1);
-        subTaskNew2 = new SubTask("SubTaskN2", NEW, "stN2", 1);
+        subTaskNew1 = new SubTask("SubTaskN1", NEW, "stN1", 9,
+                parse("2025-02-23T07:01:00.049300100+01:00[Europe/London]"), 1);
+        subTaskNew2 = new SubTask("SubTaskN2", NEW, "stN2", 9,
+                parse("2025-02-23T08:11:00.049300100+01:00[Europe/London]"), 1);
         epic2 = new Epic("EpicTwo", "Two");
-        subTaskDone1 = new SubTask("SubTaskD1", DONE, "stD1", 1);
-        subTaskDone2 = new SubTask("SubTaskD2", DONE, "stD1", 1);
-        subTaskInProgress1 = new SubTask("SubTaskIP1", IN_PROGRESS, "stIP1", 1);
-        subTaskInProgress2 = new SubTask("SubTaskIP2", IN_PROGRESS, "stIP2", 1);
-        taskNew1 = new Task("FirstTask", NEW, "t1");
-        taskNew2 = new Task("SecondTask", NEW, "t2");
+        subTaskDone1 = new SubTask("SubTaskD1", DONE, "stD1", 10,
+                parse("2025-02-23T09:22:00.049300100+01:00[Europe/London]"), 1);
+        subTaskDone2 = new SubTask("SubTaskD2", DONE, "stD1", 10,
+                parse("2025-02-23T07:33:00.049300100+01:00[Europe/London]"), 1);
+        subTaskInProgress1 = new SubTask("SubTaskIP1", IN_PROGRESS, "stIP1", 10,
+                parse("2025-02-23T08:44:00.049300100+01:00[Europe/London]"), 1);
+        subTaskInProgress2 = new SubTask("SubTaskIP2", IN_PROGRESS, "stIP2", 10,
+                parse("2025-02-22T17:55:00.049300100+01:00[Europe/London]"), 1);
+        taskNew1 = new Task("FirstTask", NEW, "t1", 10,
+                parse("2025-02-22T16:01:00.049300100+01:00[Europe/London]"));
+        taskNew2 = new Task("SecondTask", NEW, "t2", 10,
+                parse("2025-02-21T16:11:00.049300100+01:00[Europe/London]"));
     }
 
 
@@ -94,6 +106,7 @@ public class TaskManagerTestsLogic {
     }
 
     public void getSubTasksReturnListOfAllSubTasksSuccess(TaskManager taskManager) {
+        taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
         taskManager.addSubTask(subTaskInProgress2);
         assertEquals(2, taskManager.getSubTasks().size(), "Список подзадач отображается неправильно");
@@ -112,6 +125,7 @@ public class TaskManagerTestsLogic {
     }
 
     public void removeAllSubTasksSuccess(TaskManager taskManager) {
+        taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
         taskManager.addSubTask(subTaskInProgress2);
         taskManager.removeAllSubTasks();
@@ -146,8 +160,9 @@ public class TaskManagerTestsLogic {
     }
 
     public void getSubtaskByIdCorrectIdReturnSubtaskSuccess(TaskManager taskManager) {
+        taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
-        assertEquals("SubTaskIP1", taskManager.getSubTaskById(1).getName(),
+        assertEquals("SubTaskIP1", taskManager.getSubTaskById(2).getName(),
                 "Имя задачи отображается неверно");
     }
 
@@ -176,6 +191,7 @@ public class TaskManagerTestsLogic {
     }
 
     public void addSubtaskWithCorrectSubtaskAdded(TaskManager taskManager) {
+        taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
         assertEquals(1, taskManager.getSubTasks().size(), "Подзадача не добавлена");
     }
@@ -187,17 +203,20 @@ public class TaskManagerTestsLogic {
 
     public void updateTaskWithCorrectDataSuccess(TaskManager taskManager) {
         taskManager.addTask(taskNew1);
-        Task task2 = new Task("Updated", DONE, "upd");
+        Task task2 = new Task("Updated", DONE, "upd", 11,
+                parse("2025-02-23T11:01:00.049300100+01:00[Europe/London]"));
         task2.setId(1);
         taskManager.updateTask(task2);
         assertEquals("Updated", taskManager.getTaskById(1).getName(), "Название задачи отображается неверно");
         assertEquals("upd", taskManager.getTaskById(1).getDescription(), "Описание задачи отображается неверно");
         assertEquals(DONE, taskManager.getTaskById(1).getStatus(), "Статус задачи отображается неверно");
+        assertEquals(Duration.ofMinutes(11), taskManager.getTaskById(1).getDuration(), "Длительность задачи отображается неверно");
     }
 
     public void updateTaskByTaskWithWrongIdNoSuchElementException(TaskManager taskManager) {
         taskManager.addTask(taskNew1);
-        Task task2 = new Task("Updated", DONE, "upd");
+        Task task2 = new Task("Updated", DONE, "upd", 11,
+                parse("2025-02-23T11:01:00.049300100+01:00[Europe/London]"));
         task2.setId(2);
         assertThrows(NoSuchElementException.class, () -> taskManager.updateTask(task2));
     }
@@ -206,18 +225,22 @@ public class TaskManagerTestsLogic {
         Epic epic = new Epic("upd", "upd");
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
-        SubTask subTask2 = new SubTask("upd", NEW, "upd", 1);
+        SubTask subTask2 = new SubTask("upd", NEW, "upd", 11,
+                parse("2025-02-23T11:01:00.049300100+01:00[Europe/London]"), 1);
         subTask2.setId(2);
         taskManager.updateSubtask(subTask2);
         assertEquals("upd", taskManager.getSubTaskById(2).getName(), "Название подзадачи отображается неверно");
         assertEquals("upd", taskManager.getSubTaskById(2).getDescription(), "Описание подзадачи отображается неверно");
         assertEquals(NEW, taskManager.getSubTaskById(2).getStatus(), "Статус подзадачи отображается неверно");
+        assertEquals(Duration.ofMinutes(11), taskManager.getSubTaskById(2).getDuration(), "Длительность задачи отображается неверно");
     }
 
     public void updateSubTaskByTaskWithWrongIdNoSuchElementException(TaskManager taskManager) {
+        taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskInProgress1);
-        SubTask subTask2 = new SubTask("upd", NEW, "upd", 1);
-        subTask2.setId(2);
+        SubTask subTask2 = new SubTask("upd", NEW, "upd", 11,
+                parse("2025-02-23T11:01:00.049300100+01:00[Europe/London]"), 1);
+        subTask2.setId(3);
         assertThrows(NoSuchElementException.class, () -> taskManager.updateSubtask(subTask2));
     }
 
@@ -332,7 +355,8 @@ public class TaskManagerTestsLogic {
     }
 
     public void epicStatusUpdateNewEpicSubTaskToInProgressEpicInProgress(TaskManager taskManager) {
-        SubTask subTask3 = new SubTask("ST2", IN_PROGRESS, "one", 1);
+        SubTask subTask3 = new SubTask("ST2", IN_PROGRESS, "one", 11,
+                parse("2025-02-23T15:01:00.049300100+01:00[Europe/London]"), 1);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskNew1);
         taskManager.addSubTask(subTaskNew2);
@@ -343,7 +367,8 @@ public class TaskManagerTestsLogic {
     }
 
     public void epicStatusUpdateInProgressEpicSubTaskToNewEpicInProgress(TaskManager taskManager) {
-        SubTask subTask3 = new SubTask("ST2", NEW, "one", 1);
+        SubTask subTask3 = new SubTask("ST2", NEW, "one", 11,
+                parse("2025-02-23T02:01:00.049300100+01:00[Europe/London]"), 1);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskNew1);
         taskManager.addSubTask(subTaskInProgress2);
@@ -354,7 +379,8 @@ public class TaskManagerTestsLogic {
     }
 
     public void epicStatusUpdateInProgressEpicSubTaskToDoneEpicDone(TaskManager taskManager) {
-        SubTask subTask3 = new SubTask("ST2", DONE, "one", 1);
+        SubTask subTask3 = new SubTask("ST2", DONE, "one", 11,
+                parse("2025-02-23T03:01:00.049300100+01:00[Europe/London]"), 1);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
         taskManager.addSubTask(subTaskInProgress2);
@@ -364,7 +390,8 @@ public class TaskManagerTestsLogic {
     }
 
     public void epicStatusUpdateDoneEpicSubTaskToInProgressEpicInProgress(TaskManager taskManager) {
-        SubTask subTask3 = new SubTask("ST2", IN_PROGRESS, "one", 1);
+        SubTask subTask3 = new SubTask("ST2", IN_PROGRESS, "one", 11,
+                parse("2025-02-23T05:01:00.049300100+01:00[Europe/London]"), 1);
         taskManager.addEpic(epic);
         taskManager.addSubTask(subTaskDone1);
         taskManager.addSubTask(subTaskDone2);
@@ -406,8 +433,344 @@ public class TaskManagerTestsLogic {
         taskManager.addSubTask(subTaskInProgress2);
         taskManager.removeSubTaskById(2);
         assertEquals(1, taskManager.getEpicById(1).getSubtasksId().size(),
-                "Количество подзадач в эпике больше ожидаемого" );
+                "Количество подзадач в эпике больше ожидаемого");
         assertEquals(3, taskManager.getEpicById(1).getSubtasksId().get(0),
                 "Id подзадачи не верен");
     }
+
+    public void getPrioritizedTasksWithTaskPrioritizedListReturned(TaskManager taskManager) {
+        SubTask subTask1 = new SubTask("ST1", IN_PROGRESS, "one", 1,
+                ZonedDateTime.parse("2025-02-23T23:51:40.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 1,
+                ZonedDateTime.parse("2025-02-23T20:51:40.049300100+01:00[Europe/London]"), 1);
+        Task task1 = new Task("T1", NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", DONE, "upd",
+                2, ZonedDateTime.parse("2025-02-23T21:22:39.049300100+01:00[Europe/London]"));
+
+        taskManager.addEpic(epic);
+        taskManager.addSubTask(subTask1);
+        taskManager.addSubTask(subTask2);
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+
+        assertEquals("ST2", taskManager.getPrioritizedTasks().get(0).getName(),
+                "Приоритет задач неверен");
+        assertEquals("T2", taskManager.getPrioritizedTasks().get(1).getName(),
+                "Приоритет задач неверен");
+        assertEquals("T1", taskManager.getPrioritizedTasks().get(2).getName(),
+                "Приоритет задач неверен");
+        assertEquals("ST1", taskManager.getPrioritizedTasks().get(3).getName(),
+                "Приоритет задач неверен");
+    }
+
+    public void isTaskIntersectTwoTaskWithTHeSameStartAndEndTimeTrue(TaskManager taskManager) {
+        Task task1 = new Task("T1", NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", DONE, "upd",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addTask(task2));
+    }
+
+    public void isTaskIntersectTwoSubTaskWithTHeSameStartAndEndTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask1 = new SubTask("ST1", IN_PROGRESS, "one", 1,
+                ZonedDateTime.parse("2025-02-23T23:51:40.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 1,
+                ZonedDateTime.parse("2025-02-23T23:51:40.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectTaskAndSubTaskWithTHeSameStartAndEndTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        Task task1 = new Task("T1", NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 1,
+                ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectTwoTasksWithTheSameStartAndLateEndTimeTrue(TaskManager taskManager) {
+        Task task1 = new Task("T1", NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", DONE, "upd",
+                2, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addTask(task2));
+    }
+
+    public void isTaskIntersectSubTasksWithTheSameStartAndLateEndTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask1 = new SubTask("ST1", IN_PROGRESS, "one", 1,
+                ZonedDateTime.parse("2025-02-23T23:51:40.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 2,
+                ZonedDateTime.parse("2025-02-23T23:51:40.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectTaskAndSubTaskWithTheSameStartAndLateEndTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        Task task1 = new Task("T1", NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 2,
+                ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"), 1);
+
+        taskManager.addTask(task1);
+
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectTwoTasksWithDiffStartAndLateEndTimeTrue(TaskManager taskManager) {
+        Task task1 = new Task("T1", NEW, "one",
+                2, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", DONE, "upd",
+                3, ZonedDateTime.parse("2025-02-23T22:21:39.049300100+01:00[Europe/London]"));
+
+        taskManager.addTask(task1);
+
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addTask(task2));
+    }
+
+    public void isTaskIntersectSubTasksWithDiffStartAndLateEndTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask1 = new SubTask("ST1", IN_PROGRESS, "one", 2,
+                ZonedDateTime.parse("2025-02-23T23:51:40.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "two", 3,
+                ZonedDateTime.parse("2025-02-23T23:52:40.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectTaskAndSubTaskWithDiffStartAndLateEndTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        Task task1 = new Task("T1", NEW, "one",
+                2, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 3,
+                ZonedDateTime.parse("2025-02-23T22:21:39.049300100+01:00[Europe/London]"), 1);
+
+        taskManager.addTask(task1);
+
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectSecondTaskStartTimeEqualFirstTaskEndTimeTrue(TaskManager taskManager) {
+        Task task1 = new Task("T1", NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", DONE, "upd",
+                3, ZonedDateTime.parse("2025-02-23T22:21:39.049300100+01:00[Europe/London]"));
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addTask(task2));
+    }
+
+    public void isTaskIntersectSecondSubTaskStartTimeEqualFirstSubTaskEndTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask1 = new SubTask("ST1", IN_PROGRESS, "one", 1,
+                ZonedDateTime.parse("2025-02-23T23:51:40.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 3,
+                ZonedDateTime.parse("2025-02-23T23:52:40.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectSecondSubTaskStartTimeEqualFirstTaskEndTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        Task task1 = new Task("T1", NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 3,
+                ZonedDateTime.parse("2025-02-23T22:21:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectTwoTaskWithSameEndTimeSecondTaskPastStartTimeTrue(TaskManager taskManager) {
+        Task task1 = new Task("T1", NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", DONE, "upd",
+                2, ZonedDateTime.parse("2025-02-23T22:19:39.049300100+01:00[Europe/London]"));
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addTask(task2));
+    }
+
+    public void isTaskIntersectTwoSubTaskWithSameEndTimeSecondSubTaskPastStartTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask1 = new SubTask("ST1", IN_PROGRESS, "one", 1,
+                ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 2,
+                ZonedDateTime.parse("2025-02-23T22:19:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectSubTaskTaskWithSameEndTimeSubTaskPastStartTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        Task task1 = new Task("T1", NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS, "one", 2,
+                ZonedDateTime.parse("2025-02-23T22:19:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectTwoTaskWithDiffEndTimeSecondTaskPastStartTimeTrue(TaskManager taskManager) {
+        Task task1 = new Task("T1",  NEW, "one",
+                3, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2",  DONE,"upd",
+                3, ZonedDateTime.parse("2025-02-23T22:19:39.049300100+01:00[Europe/London]"));
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addTask(task2));
+    }
+
+   public void isTaskIntersectTwoSubTaskWithDiffEndTimeSecondSubTaskPastStartTimeTrue(TaskManager taskManager) {
+       taskManager.addEpic(epic);
+        SubTask subTask1 = new SubTask("ST1",  IN_PROGRESS,"one", 3,
+                ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2",  IN_PROGRESS,"one", 3,
+                ZonedDateTime.parse("2025-02-23T22:19:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectSubTaskTaskWithDiffEndTimeSubTaskPastStartTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        Task task1 = new Task("T1",  NEW, "one",
+                3, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS,"one",  3,
+                ZonedDateTime.parse("2025-02-23T22:19:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectSecondTaskEndTimeEqualFirstTaskStartTimeTrue(TaskManager taskManager) {
+        Task task1 = new Task("T1",  NEW,"one",
+                1, ZonedDateTime.parse("2025-02-23T22:22:39.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2",  DONE, "upd",
+                2, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addTask(task2));
+    }
+
+    public void isTaskIntersectSecondSubTaskEndTimeEqualFirstSubTaskStartTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask1 = new SubTask("ST1", IN_PROGRESS, "one", 1,
+                ZonedDateTime.parse("2025-02-23T23:53:40.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2",  IN_PROGRESS, "one",2,
+                ZonedDateTime.parse("2025-02-23T23:51:40.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectSecondSubTaskEndTimeEqualFirstTaskStartTimeTrue(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        Task task1 = new Task("T1",  NEW,"one",
+                3, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        SubTask subTask2 = new SubTask("ST2",  IN_PROGRESS,"one", 2,
+                ZonedDateTime.parse("2025-02-23T22:18:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addTask(task1);
+        assertThrows(TaskIsIntersectingException.class, () -> taskManager.addSubTask(subTask2));
+    }
+
+    public void isTaskIntersectSecondTaskEarlyFirstTaskFalse(TaskManager taskManager) {
+        Task task1 = new Task("T1",  NEW,"one",
+                2, ZonedDateTime.parse("2025-02-23T22:22:39.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2", DONE, "upd",
+                2, ZonedDateTime.parse("2025-02-23T22:20:38.049300100+01:00[Europe/London]"));
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+        assertEquals(2, taskManager.getTasks().size(), "Task was not added");
+    }
+
+    public void isTaskIntersectSecondSubTaskEarlyFirstSubTaskFalse(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask1 = new SubTask("ST1",  IN_PROGRESS,"one", 1,
+                ZonedDateTime.parse("2025-02-23T23:53:40.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2",  IN_PROGRESS, "one",2,
+                ZonedDateTime.parse("2025-02-23T23:51:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask1);
+        taskManager.addSubTask(subTask2);
+        assertEquals(2, taskManager.getSubTasks().size(), "SubTask was not added");
+    }
+
+    public void isTaskIntersectSecondSubTaskEarlyFirstTaskFalse(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        Task task1 = new Task("T1",  NEW, "one",
+                3, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        SubTask subTask2 = new SubTask("ST2",  IN_PROGRESS,"one", 2,
+                ZonedDateTime.parse("2025-02-23T22:18:38.049300100+01:00[Europe/London]"), 1);
+        taskManager.addTask(task1);
+        taskManager.addSubTask(subTask2);
+        assertEquals(1, taskManager.getTasks().size(), "Task was not added");
+        assertEquals(1, taskManager.getSubTasks().size(), "SubTask was not added");
+    }
+
+    public void isTaskIntersectSecondTaskAfterFirstTaskFalse(TaskManager taskManager) {
+        Task task1 = new Task("T1",  NEW, "one",
+                1, ZonedDateTime.parse("2025-02-23T22:22:40.049300100+01:00[Europe/London]"));
+        Task task2 = new Task("T2",  DONE, "upd",
+                2, ZonedDateTime.parse("2025-02-23T22:23:41.049300100+01:00[Europe/London]"));
+
+        taskManager.addTask(task1);
+        taskManager.addTask(task2);
+
+        assertEquals(2, taskManager.getTasks().size(), "Task was not added");
+    }
+
+    public void isTaskIntersectSecondSubTaskAfterFirstSubTaskFalse(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask1 = new SubTask("ST1",  IN_PROGRESS, "one",1,
+                ZonedDateTime.parse("2025-02-23T23:53:40.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2",  IN_PROGRESS, "one",2,
+                ZonedDateTime.parse("2025-02-23T23:54:41.049300100+01:00[Europe/London]"), 1);
+
+        taskManager.addSubTask(subTask1);
+        taskManager.addSubTask(subTask2);
+
+        assertEquals(2, taskManager.getSubTasks().size(), "SubTask was not added");
+    }
+
+    public void isTaskIntersectSecondSubTaskAfterFirstTaskFalse(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        Task task1 = new Task("T1",  NEW,"one",
+                3, ZonedDateTime.parse("2025-02-23T22:20:39.049300100+01:00[Europe/London]"));
+        SubTask subTask2 = new SubTask("ST2", IN_PROGRESS,"one",  2,
+                ZonedDateTime.parse("2025-02-23T22:23:40.049300100+01:00[Europe/London]"), 1);
+
+        taskManager.addTask(task1);
+        taskManager.addSubTask(subTask2);
+
+        assertEquals(1, taskManager.getTasks().size(), "Task was not added");
+        assertEquals(1, taskManager.getSubTasks().size(), "SubTask was not added");
+    }
+
+    public void calculateEpicStartAndEndTimeOneSubtask(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask = new SubTask("ST2",  IN_PROGRESS,"one", 2,
+                ZonedDateTime.parse("2025-02-23T22:18:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask);
+        assertEquals(taskManager.getEpicById(1).getStartTime("Europe/London").toString(),
+                "2025-02-23T21:18:39.049300100");
+        assertEquals(taskManager.getEpicById(1).getEndTime("Europe/London").toString(),
+                "2025-02-23T21:20:39.049300100");
+    }
+
+    public void calculateEpicStartAndEndTimeSeveralSubtask(TaskManager taskManager) {
+        taskManager.addEpic(epic);
+        SubTask subTask = new SubTask("ST2",  IN_PROGRESS,"one", 2,
+                ZonedDateTime.parse("2025-02-23T22:18:39.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask2 = new SubTask("ST2",  IN_PROGRESS,"one", 2,
+                ZonedDateTime.parse("2025-02-24T22:18:39.049300100+01:00[Europe/London]"), 1);
+        SubTask subTask3 = new SubTask("ST2",  IN_PROGRESS,"one", 2,
+                ZonedDateTime.parse("2025-02-21T22:18:39.049300100+01:00[Europe/London]"), 1);
+        taskManager.addSubTask(subTask);
+        taskManager.addSubTask(subTask2);
+        taskManager.addSubTask(subTask3);
+        assertEquals(taskManager.getEpicById(1).getStartTime("Europe/London").toString(),
+                "2025-02-21T21:18:39.049300100");
+        assertEquals(taskManager.getEpicById(1).getEndTime("Europe/London").toString(),
+                "2025-02-24T21:20:39.049300100");
+    }
+
 }

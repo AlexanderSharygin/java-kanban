@@ -3,6 +3,7 @@ import task.Epic;
 import task.SubTask;
 import task.Task;
 
+import static java.time.ZonedDateTime.parse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static task.TaskStatus.NEW;
@@ -19,11 +20,15 @@ public class TaskTests {
 
     public TaskTests() {
         epic = new Epic("EpicOne", "one");
-        subTaskNew1 = new SubTask("SubTaskN1", NEW, "stN1", 1);
-        subTaskNew2 = new SubTask("SubTaskN2", NEW, "stN2", 1);
+        subTaskNew1 = new SubTask("SubTaskN1", NEW, "stN1", 10,
+                parse("2025-02-23T18:45:00.049300100+01:00[Europe/London]"),1);
+        subTaskNew2 = new SubTask("SubTaskN2", NEW, "stN2", 10,
+                parse("2025-02-23T18:56:00.049300100+01:00[Europe/London]"),1);
         epic2 = new Epic("EpicTwo", "Two");
-        taskNew1 = new Task("FirstTask", NEW, "t1");
-        taskNew2 = new Task("SecondTask", NEW, "t2");
+        taskNew1 = new Task("FirstTask", NEW, "t1", 10,
+                parse("2025-02-23T17:05:00.049300100+01:00[Europe/London]"));
+        taskNew2 = new Task("SecondTask", NEW, "t2", 10,
+                parse("2025-02-23T17:25:00.049300100+01:00[Europe/London]"));
     }
 
     @Test

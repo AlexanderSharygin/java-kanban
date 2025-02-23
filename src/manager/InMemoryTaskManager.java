@@ -131,7 +131,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         checkIfTaskExist(task.getId());
-        checkIfTaskIntersect(task);
         Task existedTask = tasks.get(task.getId());
         existedTask.setName(task.getName());
         existedTask.setDescription(task.getDescription());
@@ -151,7 +150,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(SubTask subtask) {
         checkIfSubTaskExist(subtask.getId());
-        checkIfTaskIntersect(subtask);
         checkIfEpicExist(subtask.getEpicId());
         SubTask existedSubTask = subTasks.get(subtask.getId());
         existedSubTask.setName(subtask.getName());
@@ -245,19 +243,19 @@ public class InMemoryTaskManager implements TaskManager {
             LocalDateTime newTaskEndTime = task.getUtcStartTime().plus(task.getDuration());
             LocalDateTime oldTaskStartTime = item.getUtcStartTime();
             LocalDateTime oldTaskEndTime = item.getUtcStartTime().plus(item.getDuration());
-            if (newTaskStartTime.isBefore(oldTaskStartTime) && newTaskEndTime.isBefore(oldTaskEndTime)) {
+            if (newTaskStartTime.isBefore(oldTaskStartTime) &&
+                    (newTaskEndTime.isBefore(oldTaskEndTime) && newTaskEndTime.isAfter(oldTaskStartTime))) {
                 return true;
-            } else if (newTaskStartTime.isAfter(oldTaskStartTime) && newTaskEndTime.isAfter(oldTaskEndTime)) {
-                return true;
-            }
-            if (oldTaskEndTime.isBefore(newTaskStartTime) && oldTaskEndTime.isBefore(newTaskEndTime)) {
-                return true;
-            } else if (oldTaskStartTime.isAfter(newTaskStartTime) && oldTaskEndTime.isAfter(newTaskEndTime)) {
+            } else if (oldTaskStartTime.isBefore(newTaskStartTime) &&
+                    (oldTaskEndTime.isBefore(newTaskEndTime) && oldTaskEndTime.isAfter(newTaskStartTime))) {
                 return true;
             } else if (isTaskInsideAnother(newTaskStartTime, newTaskEndTime, oldTaskStartTime, oldTaskEndTime) ||
                     isTaskInsideAnother(oldTaskStartTime, oldTaskEndTime, newTaskStartTime, newTaskEndTime)) {
                 return true;
+            } else if (newTaskStartTime.equals(oldTaskEndTime) || newTaskEndTime.equals(oldTaskStartTime)) {
+                return true;
             }
+
         }
         return false;
     }
