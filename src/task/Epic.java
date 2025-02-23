@@ -11,7 +11,7 @@ import static task.TaskType.EPIC;
 
 public class Epic extends Task {
 
-    protected LocalDateTime EndTime;
+    protected LocalDateTime endTime;
     private final List<Integer> subtasksId;
 
     public List<Integer> getSubtasksId() {
@@ -46,11 +46,11 @@ public class Epic extends Task {
     }
 
     public void setEndTime(LocalDateTime endTime) {
-        EndTime = endTime;
+        this.endTime = endTime;
     }
 
     public LocalDateTime getUtcEndTime() {
-        return EndTime;
+        return endTime;
     }
 
     @Override
