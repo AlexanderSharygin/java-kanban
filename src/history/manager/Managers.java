@@ -1,4 +1,4 @@
-package HistoryManager;
+package history.manager;
 
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
