@@ -205,7 +205,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 bufferedWriter.newLine();
             }
         } catch (IOException exception) {
-            throw new ManagerLoadException("Что то пошло не так во время записи файла");
+            throw new ManagerSaveException("Что то пошло не так во время записи файла");
         }
     }
 
