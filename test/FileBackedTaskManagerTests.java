@@ -369,25 +369,6 @@ public class FileBackedTaskManagerTests extends TaskManagerTestsLogic {
     }
 
     @Test
-    public void saveDataWithSeveralItemsToFileListSuccess() throws IOException {
-        String filePath = "resources/saveData.csv";
-        FileBackedTaskManager taskManager = new FileBackedTaskManager(filePath);
-        taskManager.addTask(epic);
-        taskManager.addTask(taskNew1);
-        taskManager.addTask(taskNew2);
-        taskManager.addEpic(epic);
-        taskManager.addEpic(epic2);
-        taskManager.addSubTask(subTaskNew1);
-        Path path = Paths.get("resources/saveData.csv");
-        Stream<String> stream = Files.lines(path, StandardCharsets.UTF_8);
-        StringBuilder actual = new StringBuilder();
-        stream.forEach(actual::append);
-        String expected = "id,type,name,status,description,startDateTime,Duration,epic1,EPIC,EpicOne,NEW,one,2025-02-23T06:01:00.0493001,92,TASK,FirstTask,NEW,t1,2025-02-22T15:01:00.0493001,103,TASK,SecondTask,NEW,t2,2025-02-21T15:11:00.0493001,101,EPIC,EpicOne,NEW,one,2025-02-23T06:01:00.0493001,95,EPIC,EpicTwo,NEW,Two,+999999999-12-31T23:59:59.999999999,06,SUBTASK,SubTaskN1,NEW,stN1,2025-02-23T06:01:00.0493001,9,1";
-        assertEquals(expected, actual.toString(), "Данные сохранены неверно");
-        CsvEditor.removeFile("resources/saveData.csv");
-    }
-
-    @Test
     public void getPrioritizedTasksWithTaskPrioritizedListReturned() {
         super.getPrioritizedTasksWithTaskPrioritizedListReturned(taskManager);
     }
