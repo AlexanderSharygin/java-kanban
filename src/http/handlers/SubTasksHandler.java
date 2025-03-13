@@ -129,9 +129,9 @@ public class SubTasksHandler extends BaseHttpHandler implements HttpHandler {
                 taskManager.removeSubTaskById(id);
                 sendSuccess(httpExchange);
             } catch (NoSuchElementException ex) {
-              sendNotFound(httpExchange);
+                sendNotFound(httpExchange);
             } catch (ManagerSaveException e) {
-               sendException(httpExchange);
+                sendException(httpExchange);
             }
         } catch (IOException exc) {
             throw new UncheckedIOException(exc);

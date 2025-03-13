@@ -39,6 +39,7 @@ public class HttpTaskServer {
             httpServer.start();
             taskManager = manager;
             GsonBuilder gsonBuilder = new GsonBuilder();
+            gsonBuilder.serializeNulls();
             gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
             gsonBuilder.registerTypeAdapter(Duration.class, new DurationAdapter());
             gson = gsonBuilder.create();
@@ -52,7 +53,7 @@ public class HttpTaskServer {
         }
     }
 
-    public void stop() {
+    public static void stop() {
         httpServer.stop(0);
     }
 }

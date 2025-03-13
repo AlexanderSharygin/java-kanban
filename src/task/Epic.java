@@ -55,7 +55,14 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
+        String startTimeString;
+        if (startTime == null) {
+            startTimeString = "null";
+        } else {
+            startTimeString = startTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        }
+
         return String.join(",", id.toString(), EPIC.toString(), name, status.toString(), description,
-                startTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), String.valueOf(duration.getSeconds() / 60));
+                startTimeString, String.valueOf(duration.getSeconds() / 60));
     }
 }
