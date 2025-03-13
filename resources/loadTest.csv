@@ -1,0 +1,4 @@
+id,type,name,status,description,epic
+1,TASK,Task1,NEW,Description task1,2025-02-23T11:51:40.0493001,10
+2,EPIC,Epic2,DONE,Description epic2
+3,SUBTASK,Sub Task2,DONE,Description sub task3,2025-02-23T10:51:40.0493001,10,2
